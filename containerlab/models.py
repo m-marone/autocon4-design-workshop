@@ -1,10 +1,13 @@
 """Models for Containerlab."""
 
+import os
+
 # Django imports
 from django.db import models
 
 # Nautobot imports
 from nautobot.apps.models import PrimaryModel
+from nautobot.apps.utils import render_jinja2
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
@@ -38,3 +41,18 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     def __str__(self):
         """Stringify instance."""
         return self.name
+    
+    def generate_topology_file(self):
+        """Generate a containerlab topology file."""
+        with open(os.path.join(os.path.dirname(__file__), "templates", "containerlab_templates", "topology.yml.j2")) as handle:
+            template = handle.read()
+        topology_data = render_jinja2(template_code=template, context={"topology": self})
+        return(topology_data)
+    
+    def get_member_cables(self):
+        cables = set()
+        for device in self.dynamic_group.members.all():
+            for intf in device.interfaces.all():
+                if intf.cable:
+                    cables.add(intf.cable)
+        return cables
