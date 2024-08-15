@@ -44,7 +44,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     
     def generate_topology_file(self):
         """Generate a containerlab topology file."""
-        with open(os.path.join(os.path.dirname(__file__), "templates", "containerlab_templates", "topology.j2")) as handle:
+        with open(os.path.join(os.path.dirname(__file__), "templates", "containerlab_templates", "topology.yml.j2")) as handle:
             template = handle.read()
         topology_data = render_jinja2(template_code=template, context={"topology": self})
         return(topology_data)
