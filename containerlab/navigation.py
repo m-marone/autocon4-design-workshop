@@ -5,7 +5,7 @@ from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMen
 items = (
     NavMenuItem(
         link="plugins:containerlab:topology_list",
-        name="Containerlab",
+        name="Topologies",
         permissions=["containerlab.view_topology"],
         buttons=(
             NavMenuAddButton(
@@ -18,7 +18,7 @@ items = (
 
 menu_items = (
     NavMenuTab(
-        name="Apps",
+        name="Containerlab",
         groups=(NavMenuGroup(name="Containerlab", items=tuple(items)),),
     ),
 )

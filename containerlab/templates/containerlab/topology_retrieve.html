@@ -20,6 +20,12 @@
                     {{ object.description|placeholder }}
                 </td>
             </tr>
+            <tr>
+                <td>DynamicGroup</td>
+                <td>
+                    {{ object.dynamic_group | hyperlinked_object }}
+                </td>
+            </tr>
         </table>
     </div>
 {% endblock content_left_page %}

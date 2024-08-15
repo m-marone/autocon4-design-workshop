@@ -1,20 +1,24 @@
 """Forms for containerlab."""
 from django import forms
-from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
+from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin, DynamicModelChoiceField
+from nautobot.extras.models import DynamicGroup
 
 from containerlab import models
 
 
 class TopologyForm(NautobotModelForm):  # pylint: disable=too-many-ancestors
     """Topology creation/edit form."""
+    dynamic_group = DynamicModelChoiceField(
+        queryset=DynamicGroup.objects.all(), label="Dynamic Group"
+    )
 
     class Meta:
         """Meta attributes."""
-
         model = models.Topology
         fields = [
             "name",
             "description",
+            "dynamic_group",
         ]
 
 
@@ -26,13 +30,12 @@ class TopologyBulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # pyli
 
     class Meta:
         """Meta attributes."""
-
         nullable_fields = [
             "description",
         ]
 
 
-class TopologyFilterForm(NautobotFilterForm):
+class TopologyFilterForm(NautobotFilterForm): # pylint: disable=too-many-ancestors
     """Filter form to filter searches."""
 
     model = models.Topology

@@ -12,6 +12,7 @@ class TopologyTable(BaseTable):
 
     pk = ToggleColumn()
     name = tables.Column(linkify=True)
+    dynamic_group = tables.Column(linkify=True, verbose_name="Dynamic Group")
     actions = ButtonsColumn(
         models.Topology,
         # Option for modifying the default action buttons on each row:
@@ -21,18 +22,13 @@ class TopologyTable(BaseTable):
     )
 
     class Meta(BaseTable.Meta):
+        # pylint: disable=nb-use-fields-all
         """Meta attributes."""
 
         model = models.Topology
         fields = (
             "pk",
             "name",
+            "dynamic_group",
             "description",
         )
-
-        # Option for modifying the columns that show up in the list view by default:
-        # default_columns = (
-        #     "pk",
-        #     "name",
-        #     "description",
-        # )
