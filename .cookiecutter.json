@@ -1,0 +1,25 @@
+{
+    "cookiecutter": {
+        "codeowner_github_usernames": "@smith-ntc",
+        "full_name": "Network to Code, LLC",
+        "email": "info@networktocode.com",
+        "github_org": "nautobot",
+        "app_name": "containerlab",
+        "verbose_name": "Containerlab",
+        "app_slug": "containerlab",
+        "project_slug": "nautobot-app-containerlab",
+        "repo_url": "https://github.com/nautobot/nautobot-app-containerlab",
+        "base_url": "containerlab",
+        "min_nautobot_version": "2.3.0",
+        "max_nautobot_version": "2.9999",
+        "camel_name": "Containerlab",
+        "project_short_description": "Containerlab",
+        "model_class_name": "Topology",
+        "open_source_license": "Apache-2.0",
+        "docs_base_url": "https://docs.nautobot.com",
+        "docs_app_url": "https://docs.nautobot.com/projects/containerlab/en/latest",
+        "_template": "cookiecutter-nautobot-app/nautobot-app/",
+        "_output_dir": "/github",
+        "_repo_dir": "cookiecutter-nautobot-app/nautobot-app/"
+    }
+}
