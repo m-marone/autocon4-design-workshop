@@ -18,20 +18,22 @@ from nautobot.apps.models import PrimaryModel
 class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     """Base model for Containerlab app."""
 
-    name = models.CharField(max_length=100, unique=True)
-    description = models.CharField(max_length=200, blank=True)
-    # additional model fields
+    name = models.CharField(max_length=255, unique=True, help_text="Name of Containerlab Topology")
+    description = models.CharField(max_length=255, blank=True)
+    dynamic_group = models.ForeignKey(
+        to="extras.DynamicGroup",
+        on_delete=models.CASCADE,
+        related_name="containerlab_topologies",
+        help_text="DynamicGroup from which to build the topology file",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         """Meta class."""
-
         ordering = ["name"]
-
-        # Option for fixing capitalization (i.e. "Snmp" vs "SNMP")
-        # verbose_name = "Containerlab"
-
-        # Option for fixing plural name (i.e. "Chicken Tenders" vs "Chicken Tendies")
-        # verbose_name_plural = "Containerlabs"
+        verbose_name = "Containerlab Topology"
+        verbose_name_plural = "Containerlab Topologies"
 
     def __str__(self):
         """Stringify instance."""
