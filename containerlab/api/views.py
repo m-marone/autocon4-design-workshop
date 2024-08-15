@@ -15,3 +15,11 @@ class TopologyViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancesto
 
     # Option for modifying the default HTTP methods:
     # http_method_names = ["get", "post", "put", "patch", "delete", "head", "options", "trace"]
+
+
+class CLKindViewSet(NautobotModelViewSet):
+    """CLKind viewset."""
+
+    queryset = models.CLKind.objects.all()
+    serializer_class = serializers.CLKindSerializer
+    filterset_class = filters.CLKindFilterSet

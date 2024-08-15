@@ -5,7 +5,9 @@ from nautobot.apps.filters import NameSearchFilterSet, NautobotFilterSet
 from containerlab import models
 
 
-class TopologyFilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: disable=too-many-ancestors
+class TopologyFilterSet(
+    NautobotFilterSet, NameSearchFilterSet
+):  # pylint: disable=too-many-ancestors
     """Filter for Topology."""
 
     class Meta:
@@ -15,3 +17,13 @@ class TopologyFilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: disa
 
         # add any fields from the model that you would like to filter your searches by using those
         fields = ["id", "name", "description"]
+
+
+class CLKindFilterSet(NautobotFilterSet):
+    """Filter for ContainerLab Kinds."""
+
+    class Meta:
+        """Meta class."""
+
+        model = models.CLKind
+        fields = "__all__"

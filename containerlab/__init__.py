@@ -4,6 +4,7 @@
 from importlib import metadata
 
 from nautobot.apps import NautobotAppConfig
+from nautobot.apps import nautobot_database_ready
 
 __version__ = metadata.version(__name__)
 

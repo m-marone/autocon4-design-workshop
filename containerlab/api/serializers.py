@@ -4,7 +4,9 @@ from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixi
 from containerlab import models
 
 
-class TopologySerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
+class TopologySerializer(
+    NautobotModelSerializer, TaggedModelSerializerMixin
+):  # pylint: disable=too-many-ancestors
     """Topology Serializer."""
 
     class Meta:
@@ -15,3 +17,13 @@ class TopologySerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  
 
         # Option for disabling write for certain fields:
         # read_only_fields = []
+
+
+class CLKindSerializer(NautobotModelSerializer):
+    """CLKind Serializer."""
+
+    class Meta:
+        """Meta class."""
+
+        model = models.CLKind
+        fields = "__all__"

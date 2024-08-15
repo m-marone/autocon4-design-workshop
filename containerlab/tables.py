@@ -32,3 +32,23 @@ class TopologyTable(BaseTable):
             "dynamic_group",
             "description",
         )
+
+        # Option for modifying the columns that show up in the list view by default:
+        # default_columns = (
+        #     "pk",
+        #     "name",
+        #     "description",
+        # )
+
+
+class CLKindTable(BaseTable):
+    """Table for CLKind."""
+
+    pk = ToggleColumn()
+    kind = tables.Column(linkify=True)
+
+    class Meta(BaseTable.Meta):
+        """Meta attributes."""
+
+        model = models.CLKind
+        fields = ("pk", "kind", "image", "type")
