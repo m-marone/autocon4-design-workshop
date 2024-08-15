@@ -1,0 +1,17 @@
+---
+name: {{ topology.name }}
+
+topology:
+  kinds:
+    ceos:
+      image: ceos:4.30.5M
+  nodes:
+    {%- for device in topology.dynamic_group.members.all() %}
+    {{ device }}:
+      kind: ceos
+    {%- endfor %}
+
+  links:
+    {%- for cable in topology.get_member_cables() %}
+    - endpoints: ["{{ cable.termination_a.device.name }}:{{cable.termination_a.name}}", "{{ cable.termination_b.device.name }}:{{cable.termination_b.name}}"]
+    {%- endfor %}

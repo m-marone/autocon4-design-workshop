@@ -30,3 +30,21 @@
     </div>
 {% endblock content_left_page %}
 
+{% block content_right_page %}
+<div class="row">
+    <div class="col-md-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Topology File</strong>
+            </div>
+            <table class="table table-hover panel-body attr-table">
+                <tr>
+                    <td>
+                        <pre>{{ object.generate_topology_file }}</pre>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content_right_page %}
