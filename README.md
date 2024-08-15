@@ -23,7 +23,9 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
 
 ## Overview
 
-> Developer Note: Add a long (2-3 paragraphs) description of what the App does, what problems it solves, what functionality it adds to Nautobot, what external systems it works with etc.
+This Nautobot App allows you to model the topology of your Nautobot Devices and generate a network lab using [Containerlab](https://containerlab.dev/). The lab can then be deployed to a local machine for development or a remote AWS lab using Terraform (TODO).
+
+Optionally, a [Remote Topology File](https://containerlab.dev/cmd/deploy/#remote-topology-files) can be retrieved from a GitHub or GitLab repository to deploy a shared container lab environment.
 
 ### Screenshots
 
