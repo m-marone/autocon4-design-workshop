@@ -1,0 +1,84 @@
+---
+# TODO: Migrate to using Packer instead
+# - name: Build and configure VM
+#   when: build is defined and build == "yes"
+#   include_role:
+#     name: build_cloud_image
+
+- name: Upload topology files and run ContainerLab topology
+  when: runclab is not defined or runclab == "yes"
+  block:
+    # Always do this in case the topology changes
+    - name: Move topology directory onto instance
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/topologies/{{ EXPORT_LOCATION | replace(' ', '_') }}/"
+        dest: "/home/{{ CLOUD_USER_MAP[CLOUD] }}/"
+
+    - name: Deploy ContainerLab topology
+      ansible.builtin.command:
+        chdir: "/home/{{ CLOUD_USER_MAP[CLOUD] }}"
+        cmd: "clab deploy -t {{ EXPORT_LOCATION | replace(' ', '_') }}.clab.yml --reconfigure"
+      become: true
+
+    - name: Wait for Graphite to come up on host
+      ansible.builtin.wait_for:
+        port: 8080
+        delay: 5
+        timeout: 10
+        msg: "Timeout waiting for Graphite to load on port 8080"
+      register: graphite_port_check
+
+    - name: Launch ContainerLab Graph page if not already running (on re-run)
+      block:
+        - name: Check if ContainerLab Graph is already running on host
+          ansible.builtin.wait_for:
+            port: 50080
+            timeout: 3
+            msg: "ContainerLab Graph doesn't appear to be running on port 50080"
+          register: clab_graph_port_check
+      rescue:
+        - name: Deploy ContainerLab graph page
+          ansible.builtin.shell:
+            chdir: "/home/{{ CLOUD_USER_MAP[CLOUD] }}"
+            cmd: "(clab graph > /dev/null 2>&1 &)"
+          become: true
+
+        - name: Wait for ContainerLab Graph to come up on host
+          ansible.builtin.wait_for:
+            port: 50080
+            delay: 3
+            timeout: 10
+            msg: "Timeout waiting for ContainerLab Graph to load on port 50080"
+          register: clab_graph_port_check
+
+    # TODO: need to know credentials, or add 'username admin secret admin' to config files
+    # eos: username admin privilege 15 role network-admin secret sha512 abc
+    - name: Open web browser to ContainerLab Graph
+      ansible.builtin.command:
+        cmd: "open http://{{ ansible_host }}:50080"
+      delegate_to: localhost
+
+    - name: Open web browser to Graphite
+      ansible.builtin.command:
+        cmd: "open http://{{ ansible_host }}:8080/graphite"
+      delegate_to: localhost
+
+    - name: Get list of running ContainerLab nodes
+      ansible.builtin.command:
+        cmd: "clab inspect --format table"
+      register: clab_inspect_table
+      become: true
+
+    - name: Save ContainerLab inspect output to artifact
+      ansible.builtin.lineinfile:
+        path: "logs/{{ ansible_host }}.log"
+        line: |
+          ################################################################
+          #                                                              #
+          #                  ContainerLab inspect output                 #
+          #                                                              #
+          ################################################################
+          
+          {{ clab_inspect_table.stdout }}
+        create: yes
+      delegate_to: localhost
