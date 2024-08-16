@@ -45,6 +45,21 @@ services:
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
+  containerlab:
+    image: ghcr.io/srl-labs/clab
+    network_mode: host
+    pid: host
+    volumes:
+      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock
+      - /var/run/netns:/var/run/netns
+      - /etc/hosts:/etc/hosts
+      - "../:$PWD"
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    working_dir: "$PWD"
+    profiles:
+      - containerlab
+    privileged: true  # Required for containerlab to work because it needs to modify kernel sysctl values
+
 # To expose postgres or redis to the host uncomment the following
 # postgres:
 #   ports:

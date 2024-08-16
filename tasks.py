@@ -836,26 +836,26 @@ def validate_app_config(context):
 
 @task(
     help={
-        "action": "start or stop the container lab. Defaults to start.",
+        "action": "deploy or destroy the container lab. Defaults to deploy.",
         "clab_filename": "specify the filename for the containerlab topology file. Defaults to clab.yml.",
         "topology": "specify the nautobot topology. Defaults to the first topology if not supplied.",
     }
 )
-def clab(context, action="start", clab_filename="clab.yml", topology=None):
+def clab(context, action="deploy", clab_filename="clab.yml", topology=None):
     """Start a Containerlab and attach it to the docker compose network."""
     if is_truthy(context.containerlab.local):
         raise Exit("Local development is not supported.")
-    if action not in ["start", "stop"]:
-        raise ValueError("Invalid action. Must be either 'start' or 'stop'.")
-    if action == "stop":
-        context.run(f"sudo containerlab destroy -t {clab_filename}")
-        return
+    if action not in ["deploy", "destroy"]:
+        raise ValueError("Invalid action. Must be either 'deploy' or 'destroy'.")
+    if action == "destroy":
+        compose_command = f"run --rm --entrypoint='containerlab {action} -t {clab_filename}' containerlab"
+        return docker_compose(context, compose_command, pty=True, echo=True)
 
     # Determine the subnet of the docker compose project's default network
     docker_inspect_cmd = f"docker network inspect {context.containerlab.project_name}_default"
     docker_inspect_cmd += " -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}'"
     try:
-        bridge_subnet = context.run(docker_inspect_cmd).stdout
+        bridge_subnet = context.run(docker_inspect_cmd).stdout.strip()
     except UnexpectedExit:
         raise Exit("Try again after starting the project with `invoke start` or `invoke debug`.")
 
@@ -871,5 +871,5 @@ def clab(context, action="start", clab_filename="clab.yml", topology=None):
     with open(clab_filename, "w") as output_clab_topology_file:
         output_clab_topology_file.write(clab_file_contents)
 
-    # Deploy the containerlab topology
-    context.run(f"sudo containerlab deploy -t {clab_filename}")
+    compose_command = f"run --rm --entrypoint='containerlab {action} -t {clab_filename}' containerlab"
+    return docker_compose(context, compose_command, pty=True, echo=True)
