@@ -27,6 +27,13 @@ This Nautobot App allows you to model the topology of your Nautobot Devices and 
 
 Optionally, a [Remote Topology File](https://containerlab.dev/cmd/deploy/#remote-topology-files) can be retrieved from a GitHub or GitLab repository to deploy a shared container lab environment.
 
+### Quick Start Dev Environment
+
+`invoke build`
+`invoke migrate start cli`
+`nautobot-server generate_clab_test_data && exit`
+`invoke clab`
+
 ### Screenshots
 
 > Developer Note: Add any representative screenshots of the App in action. These images should also be added to the `docs/user/app_use_cases.md` section.
