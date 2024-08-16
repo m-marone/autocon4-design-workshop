@@ -25,9 +25,7 @@ from nautobot.apps.utils import render_jinja2
 class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     """Base model for Containerlab app."""
 
-    name = models.CharField(
-        max_length=255, unique=True, help_text="Name of Containerlab Topology"
-    )
+    name = models.CharField(max_length=255, unique=True, help_text="Name of Containerlab Topology")
     description = models.CharField(max_length=255, blank=True)
     dynamic_group = models.ForeignKey(
         to="extras.DynamicGroup",
@@ -37,6 +35,8 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
         blank=True,
         null=True,
     )
+
+    is_dynamic_group_associable_model = False
 
     class Meta:
         """Meta class."""
@@ -60,9 +60,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
             )
         ) as handle:
             template = handle.read()
-        topology_data = render_jinja2(
-            template_code=template, context={"topology": self}
-        )
+        topology_data = render_jinja2(template_code=template, context={"topology": self})
         return topology_data
 
     def get_member_cables(self):
@@ -85,9 +83,7 @@ class CLKind(PrimaryModel):
         blank=True,
         help_text="These configurations are flattened an applied to each node. This field has access to obj object which represents each device.",
     )
-    platform = models.ForeignKey(
-        to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind"
-    )
+    platform = models.ForeignKey(to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind")
     exposed_ports = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -114,9 +110,7 @@ class CLKind(PrimaryModel):
         # Ensure ports isn't defined in Extra Node configuration. While it is valid, we use the exposed ports field.
         if "ports" in self.node_extras.keys():
             raise ValidationError(
-                {
-                    "node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."
-                }
+                {"node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."}
             )
 
     def clean(self):
