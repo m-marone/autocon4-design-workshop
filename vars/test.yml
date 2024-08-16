@@ -1,0 +1,90 @@
+---
+containers:
+  - container_id: 9fec2a2f1a88
+    image: 'netreplica/graphite:latest'
+    ipv4_address: 172.100.100.99/24
+    ipv6_address: N/A
+    kind: linux
+    labPath: New_York_City.clab.yml
+    lab_name: New_York_City
+    name: graphite
+    state: running
+  - container_id: 906f6f84a734
+    image: 'ceos:4.29.1F'
+    ipv4_address: 172.100.100.100/24
+    ipv6_address: N/A
+    kind: ceos
+    labPath: New_York_City.clab.yml
+    lab_name: New_York_City
+    name: nyc-leaf-01.infra.ntc.com
+    state: running
+  - container_id: f1402f7b169d
+    image: 'ceos:4.29.1F'
+    ipv4_address: 172.100.100.101/24
+    ipv6_address: N/A
+    kind: ceos
+    labPath: New_York_City.clab.yml
+    lab_name: New_York_City
+    name: nyc-leaf-02.infra.ntc.com
+    state: running
+  - container_id: 4ac6e3ed6bef
+    image: 'ceos:4.29.1F'
+    ipv4_address: 172.100.100.102/24
+    ipv6_address: N/A
+    kind: ceos
+    labPath: New_York_City.clab.yml
+    lab_name: New_York_City
+    name: nyc-spine-01.infra.ntc.com
+    state: running
+  - container_id: 0c62660e7384
+    image: 'ceos:4.29.1F'
+    ipv4_address: 172.100.100.103/24
+    ipv6_address: N/A
+    kind: ceos
+    labPath: New_York_City.clab.yml
+    lab_name: New_York_City
+    name: nyc-spine-02.infra.ntc.com
+    state: running
+tunnels:
+  - endpoint:
+      id: ep_2ZJ88vwbPzXTOr0afLE7CB0aKKv
+      uri: 'https://api.ngrok.com/endpoints/ep_2ZJ88vwbPzXTOr0afLE7CB0aKKv'
+    forwards_to: '172.100.100.100:22'
+    id: tn_2ZJ88vwbPzXTOr0afLE7CB0aKKv
+    proto: tcp
+    public_url: 'tcp://6.tcp.ngrok.io:17880'
+    region: us
+    started_at: '2023-12-09T13:31:05Z'
+    tunnel_session:
+      id: ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7
+      uri: 'https://api.ngrok.com/tunnel_sessions/ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7'
+  - endpoint:
+      id: ep_2ZJ88vFinDvxpvqpqotbFHyc5Pr
+      uri: 'https://api.ngrok.com/endpoints/ep_2ZJ88vFinDvxpvqpqotbFHyc5Pr'
+    forwards_to: '172.100.100.102:22'
+    id: tn_2ZJ88vFinDvxpvqpqotbFHyc5Pr
+    proto: tcp
+    public_url: 'tcp://0.tcp.ngrok.io:18578'
+    region: us
+    started_at: '2023-12-09T13:31:05Z'
+    tunnel_session:
+      id: ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7
+      uri: 'https://api.ngrok.com/tunnel_sessions/ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7'
+  - endpoint:
+      id: ep_2ZJ88uBsfT33lU9eUXwMe2O5yNa
+      uri: 'https://api.ngrok.com/endpoints/ep_2ZJ88uBsfT33lU9eUXwMe2O5yNa'
+    forwards_to: '172.100.100.101:22'
+    id: tn_2ZJ88uBsfT33lU9eUXwMe2O5yNa
+    proto: tcp
+    public_url: 'tcp://2.tcp.ngrok.io:16921'
+    region: us
+    started_at: '2023-12-09T13:31:05Z'
+    tunnel_session:
+      id: ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7
+      uri: 'https://api.ngrok.com/tunnel_sessions/ts_2ZJ88xcGa5ovR5xpEbm7aJvoyU7'
+
+ngrok_tunnels:
+  tunnels:
+    - public_url: "tcp://0.tcp.ngrok.io:12345"
+    - public_url: "tcp://1.tcp.ngrok.io:12346"
+    - public_url: "tcp://2.tcp.ngrok.io:12347"

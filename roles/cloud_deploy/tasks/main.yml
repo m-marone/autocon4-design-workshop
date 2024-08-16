@@ -1,0 +1,29 @@
+---
+- name: "Manage {{ CLOUD }} infrastructure with Terraform"
+  community.general.terraform:
+    project_path: "{{ playbook_dir }}/terraform/{{ CLOUD | lower }}"
+    state: "{{ state }}"
+    variables:
+      instance_count: "{{ LAB_COUNT }}"
+  register: terraform_results
+  delegate_to: localhost
+  environment:
+    TF_VAR_AWS_ACCESS_KEY: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+    TF_VAR_AWS_SECRET_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+
+- name: Initialize empty list for IP addresses
+  ansible.builtin.set_fact:
+    server_ips: []
+
+- name: Deploy infrastructure
+  when: state == "present"
+  include_tasks: "add_instance_as_host.yml"
+  loop: "{{ terraform_results.outputs.instance_public_ip.value }}"
+  loop_control:
+    loop_var: item
+    index_var: idx
+
+- name: Save IP Addresses as artifact
+  ansible.builtin.set_stats:
+    data:
+      server_ips: "{{ server_ips }}"

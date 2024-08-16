@@ -1,0 +1,10 @@
+---
+- name: "Validate vars"
+  assert:
+    that:
+      - CLOUD is defined
+      - CLOUD is string
+      - CLOUD in ['aws', 'gcp', 'do']
+      - state is defined
+      - state is string
+      - state in ['present', 'absent']
