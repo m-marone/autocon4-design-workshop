@@ -29,10 +29,14 @@ Optionally, a [Remote Topology File](https://containerlab.dev/cmd/deploy/#remote
 
 ### Quick Start Dev Environment
 
+Download the Arista cEOS image `cEOS64-lab-4.32.1F.tar.xz` from [Arista's website](https://www.arista.com/en/support/software-download) and then run `docker import cEOS64-lab-4.32.1F.tar.xz ceos:4.32.1F` from the directory where this file was downloaded. Then you can proceed with the rest of the dev environment quick start below.
+
 `invoke build`
 `invoke migrate start cli`
 `nautobot-server generate_clab_test_data && exit`
 `invoke clab`
+
+This will create 3 Arista cEOS routers in Nautobot and an attached containerlab environment. The routers will be connected to each other with the following cables in Nautobot (and virtual cables in containerlab): `rtr1:eth1` to `rtr2:eth1`, `rtr2:eth4` to `rtr3:eth4`. To stop the containerlab routers, run `invoke clab -a destroy`.
 
 ### Screenshots
 
