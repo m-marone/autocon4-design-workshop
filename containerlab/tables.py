@@ -51,4 +51,4 @@ class CLKindTable(BaseTable):
         """Meta attributes."""
 
         model = models.CLKind
-        fields = ("pk", "kind", "image", "type")
+        fields = ("pk", "kind", "image")

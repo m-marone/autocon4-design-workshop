@@ -2,6 +2,7 @@
 
 import os
 import json
+import yaml
 
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
@@ -51,6 +52,9 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
         """Stringify instance."""
         return self.name
 
+    def generate_topology_file_dict(self, **kwargs):
+        return yaml.safe_load(self.generate_topology_file())
+
     def generate_topology_file(self, **kwargs):
         """Generate a containerlab topology file."""
         with open(
@@ -95,7 +99,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
 
     def validate_topology_file(self, **kwargs):
         """Validate generated topology file."""
-        topology_data = json.loads(self.generate_topology_file())
+        topology_yaml = yaml.safe_load(self.generate_topology_file())
         with open(
             os.path.join(os.path.dirname(__file__), "utils", "topology_schema.json")
         ) as file:
@@ -103,9 +107,10 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
             Draft7Validator.check_schema(schema)
 
             try:
-                Draft7Validator(schema).validate(topology_data)
+                Draft7Validator(schema).validate(topology_yaml)
+                return {"valid": True, "error": ""}
             except JsonSchemaValidationError as err:
-                return f"{err.message}{err.json_path}"
+                return {"valid": False, "error": err.message}
 
 
 class CLKind(PrimaryModel):
