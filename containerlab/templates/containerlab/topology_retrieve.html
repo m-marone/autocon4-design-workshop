@@ -31,20 +31,25 @@
 {% endblock content_left_page %}
 
 {% block content_right_page %}
-<div class="row">
-    <div class="col-md-10">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Topology File</strong>
-            </div>
-            <table class="table table-hover panel-body attr-table">
-                <tr>
-                    <td>
-                        <pre>{{ object.generate_topology_file }}</pre>
-                    </td>
-                </tr>
-            </table>
+    {% with object.validate_topology_file as validate %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Topology File {{ validate.valid | render_boolean }}</strong>
         </div>
+        <table class="table table-hover panel-body attr-table">
+            {% if not validate.valid %}
+            <tr>
+                <td>
+                    {% include 'extras/inc/json_data.html' with data=validate.error format="json" %}
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    {% include 'extras/inc/json_data.html' with data=object.generate_topology_file_dict format="yaml" %}
+                </td>
+            </tr>
+        </table>
     </div>
-</div>
+    {% endwith %}
 {% endblock content_right_page %}
