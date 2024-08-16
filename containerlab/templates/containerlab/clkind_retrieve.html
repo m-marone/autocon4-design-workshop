@@ -1,0 +1,60 @@
+
+{% extends 'generic/object_retrieve.html' %}
+{% load helpers %}
+
+{% block title %}
+ContainerLab Kind {{ obj.kind }}
+{% endblock title %}
+
+{% block content_left_page %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>ContainerLab Kind {{ obj.kind }} Details</strong>
+    </div>
+    <table class="table table-hover panel-body attr-table">
+        <tr>
+            <td>Kind</td>
+            <td>
+                {{ object.kind }}
+            </td>
+        </tr>
+        <tr>
+            <td>Image</td>
+            <td>
+                {{ object.image }}
+            </td>
+        </tr>
+        <tr>
+            <td>Exposed Ports</td>
+            <td>
+                {{ object.exposed_ports }}
+            </td>
+        </tr>
+    </table>
+</div>
+{% endblock content_left_page %}
+
+{% block content_right_page %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Related Nautobot Platform</strong>
+        </div>
+        <table class="table table-hover panel-body attr-table">
+            <tr>
+                <td><a href="{{ object.platform.get_absolute_url }}">{{ object.platform.name }}</a></td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Extra Node Configuration</strong>
+        </div>
+        <table class="table table-hover panel-body attr-table">
+            <tr>
+                <td>
+                {% include 'extras/inc/json_data.html' with data=object.node_extras format="json" %}
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock content_right_page %}

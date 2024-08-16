@@ -14,6 +14,17 @@ items = (
             ),
         ),
     ),
+    NavMenuItem(
+        link="plugins:containerlab:clkind_list",
+        name="Kinds",
+        permissions=["containerlab.view_clkind"],
+        buttons=(
+            NavMenuAddButton(
+                link="plugins:containerlab:clkind_add",
+                permissions=["containerlab.add_clkind"],
+            ),
+        ),
+    ),
 )
 
 menu_items = (

@@ -6,5 +6,6 @@ from containerlab import views
 
 router = NautobotUIViewSetRouter()
 router.register("topology", views.TopologyUIViewSet)
+router.register("clkind", views.CLKindUIViewSet)
 
 urlpatterns = router.urls
