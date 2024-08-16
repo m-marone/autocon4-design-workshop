@@ -17,6 +17,7 @@ from pathlib import Path
 from time import sleep
 
 from invoke.collection import Collection
+from invoke.exceptions import Exit, UnexpectedExit
 from invoke.tasks import task as invoke_task
 
 
@@ -154,7 +155,7 @@ def run_command(context, command, **kwargs):
                 **kwargs.get("env", {}),
                 **kwargs.pop("command_env"),
             }
-        context.run(command, **kwargs)
+        return context.run(command, **kwargs)
     else:
         # Check if nautobot is running, no need to start another nautobot container to run a command
         docker_compose_status = "ps --services --filter status=running"
@@ -173,7 +174,7 @@ def run_command(context, command, **kwargs):
 
         pty = kwargs.pop("pty", True)
 
-        docker_compose(context, compose_command, pty=pty, **kwargs)
+        return docker_compose(context, compose_command, pty=pty, **kwargs)
 
 
 # ------------------------------------------------------------------------------
@@ -831,3 +832,44 @@ def validate_app_config(context):
     """Validate the app config based on the app config schema."""
     start(context, service="nautobot")
     nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})
+
+
+@task(
+    help={
+        "action": "start or stop the container lab. Defaults to start.",
+        "clab_filename": "specify the filename for the containerlab topology file. Defaults to clab.yml.",
+        "topology": "specify the nautobot topology. Defaults to the first topology if not supplied.",
+    }
+)
+def clab(context, action="start", clab_filename="clab.yml", topology=None):
+    """Start a Containerlab and attach it to the docker compose network."""
+    if is_truthy(context.containerlab.local):
+        raise Exit("Local development is not supported.")
+    if action not in ["start", "stop"]:
+        raise ValueError("Invalid action. Must be either 'start' or 'stop'.")
+    if action == "stop":
+        context.run(f"sudo containerlab destroy -t {clab_filename}")
+        return
+
+    # Determine the subnet of the docker compose project's default network
+    docker_inspect_cmd = f"docker network inspect {context.containerlab.project_name}_default"
+    docker_inspect_cmd += " -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}'"
+    try:
+        bridge_subnet = context.run(docker_inspect_cmd).stdout
+    except UnexpectedExit:
+        raise Exit("Try again after starting the project with `invoke start` or `invoke debug`.")
+
+    # Generate the topology file using `nautobot-server generate_clab_topology`
+    command = "nautobot-server generate_clab_topology"
+    command += f" --mgmt-network {context.containerlab.project_name}_default --mgmt-subnet {bridge_subnet}"
+    if topology:
+        command += f" --topology {topology}"
+    mgmt_command_result = run_command(context, command, pty=False, echo=False, hide=True)
+    clab_file_contents = mgmt_command_result.stdout.strip()
+
+    # Write the containerlab topology file
+    with open(clab_filename, "w") as output_clab_topology_file:
+        output_clab_topology_file.write(clab_file_contents)
+
+    # Deploy the containerlab topology
+    context.run(f"sudo containerlab deploy -t {clab_filename}")

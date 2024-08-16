@@ -1,14 +1,23 @@
 ---
-name: {{ topology.name }}
-
+name: {{ topology.name|slugify }}
+{% if mgmt_network or mgmt_subnet %}
+mgmt:
+  {% if mgmt_network %}network: {{ mgmt_network }}{% endif %}
+  {% if mgmt_subnet %}ipv4-subnet: {{ mgmt_subnet }}{% endif %}
+{% endif %}
 topology:
   kinds:
-    ceos:
-      image: ceos:4.30.5M
+    {%- for kind in kinds %}
+    {{ kind.kind }}:
+      image: {{ kind.image }}
+    {%- endfor %}
   nodes:
-    {%- for device in topology.dynamic_group.members.all() %}
-    {{ device }}:
-      kind: ceos
+    {%- for member in members %}
+    {{ member.obj.name }}:
+      kind: {{ member.kind.kind }}
+    {%- for key, value in member.node_extras.items() %}
+      {{ key }}: {{ value }}
+    {%- endfor %}
     {%- endfor %}
 
   links:

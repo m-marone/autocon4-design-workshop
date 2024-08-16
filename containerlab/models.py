@@ -2,14 +2,9 @@
 
 import os
 
-# Django imports
-from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
-import jsonschema
-from jsonschema import validate
-
-# Nautobot imports
+from django.db import models
 from nautobot.apps.models import PrimaryModel
 from nautobot.apps.utils import render_jinja2
 
@@ -49,7 +44,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
         """Stringify instance."""
         return self.name
 
-    def generate_topology_file(self):
+    def generate_topology_file(self, **kwargs):
         """Generate a containerlab topology file."""
         with open(
             os.path.join(
@@ -60,10 +55,28 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
             )
         ) as handle:
             template = handle.read()
-        topology_data = render_jinja2(template_code=template, context={"topology": self})
+
+        members = []
+        kinds = set()
+        for member in self.dynamic_group.members.all():
+            kind = CLKind.objects.get(platform=member.platform)
+            kinds.add(kind)
+            members.append(
+                {
+                    "obj": member,
+                    "kind": kind,
+                    "node_extras": {
+                        k: render_jinja2(template_code=v, context={"obj": member}) for k, v in kind.node_extras.items()
+                    },
+                }
+            )
+
+        topology_data = render_jinja2(
+            template_code=template, context={"topology": self, "members": members, "kinds": kinds, **kwargs}
+        )
         return topology_data
 
-    def get_member_cables(self):
+    def get_member_cables(self):  # noqa: D102
         cables = set()
         for device in self.dynamic_group.members.all():
             for intf in device.interfaces.all():
@@ -97,16 +110,15 @@ class CLKind(PrimaryModel):
     def _clean_exposed_ports(self):
         """Perform validation of the `exposed_ports` field."""
         # Split the string by commas
+        if self.exposed_ports:
+            values = self.exposed_ports.split(",")
 
-        values = self.exposed_ports.split(",")
-
-        # Check if any value is empty (e.g., ",," or leading/trailing commas)
-        if any(not v.strip() for v in values):
-            raise ValidationError({"exposed_ports": "Invalid Comma-Separated string."})
+            # Check if any value is empty (e.g., ",," or leading/trailing commas)
+            if any(not v.strip() for v in values):
+                raise ValidationError({"exposed_ports": "Invalid Comma-Separated string."})
 
     def _clean_node_extras(self):
         """Perform validation of the `node_extras` field."""
-
         # Ensure ports isn't defined in Extra Node configuration. While it is valid, we use the exposed ports field.
         if "ports" in self.node_extras.keys():
             raise ValidationError(
