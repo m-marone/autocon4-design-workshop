@@ -1,12 +1,17 @@
 """Models for Containerlab."""
 
 import os
+import json
 
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from nautobot.apps.models import PrimaryModel
 from nautobot.apps.utils import render_jinja2
+
+
+from jsonschema.validators import Draft7Validator
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
@@ -20,7 +25,9 @@ from nautobot.apps.utils import render_jinja2
 class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     """Base model for Containerlab app."""
 
-    name = models.CharField(max_length=255, unique=True, help_text="Name of Containerlab Topology")
+    name = models.CharField(
+        max_length=255, unique=True, help_text="Name of Containerlab Topology"
+    )
     description = models.CharField(max_length=255, blank=True)
     dynamic_group = models.ForeignKey(
         to="extras.DynamicGroup",
@@ -66,13 +73,15 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
                     "obj": member,
                     "kind": kind,
                     "node_extras": {
-                        k: render_jinja2(template_code=v, context={"obj": member}) for k, v in kind.node_extras.items()
+                        k: render_jinja2(template_code=v, context={"obj": member})
+                        for k, v in kind.node_extras.items()
                     },
                 }
             )
 
         topology_data = render_jinja2(
-            template_code=template, context={"topology": self, "members": members, "kinds": kinds, **kwargs}
+            template_code=template,
+            context={"topology": self, "members": members, "kinds": kinds, **kwargs},
         )
         return topology_data
 
@@ -83,6 +92,20 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
                 if intf.cable:
                     cables.add(intf.cable)
         return cables
+
+    def validate_topology_file(self, **kwargs):
+        """Validate generated topology file."""
+        topology_data = json.loads(self.generate_topology_file())
+        with open(
+            os.path.join(os.path.dirname(__file__), "utils", "topology_schema.json")
+        ) as file:
+            schema = json.load(file)
+            Draft7Validator.check_schema(schema)
+
+            try:
+                Draft7Validator(schema).validate(topology_data)
+            except JsonSchemaValidationError as err:
+                return f"{err.message}{err.json_path}"
 
 
 class CLKind(PrimaryModel):
@@ -96,7 +119,9 @@ class CLKind(PrimaryModel):
         blank=True,
         help_text="These configurations are flattened an applied to each node. This field has access to obj object which represents each device.",
     )
-    platform = models.ForeignKey(to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind")
+    platform = models.ForeignKey(
+        to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind"
+    )
     exposed_ports = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -115,14 +140,18 @@ class CLKind(PrimaryModel):
 
             # Check if any value is empty (e.g., ",," or leading/trailing commas)
             if any(not v.strip() for v in values):
-                raise ValidationError({"exposed_ports": "Invalid Comma-Separated string."})
+                raise ValidationError(
+                    {"exposed_ports": "Invalid Comma-Separated string."}
+                )
 
     def _clean_node_extras(self):
         """Perform validation of the `node_extras` field."""
         # Ensure ports isn't defined in Extra Node configuration. While it is valid, we use the exposed ports field.
         if "ports" in self.node_extras.keys():
             raise ValidationError(
-                {"node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."}
+                {
+                    "node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."
+                }
             )
 
     def clean(self):
