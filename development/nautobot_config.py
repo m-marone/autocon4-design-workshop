@@ -127,13 +127,14 @@ if not _TESTING:
 #
 
 # Enable installed Apps. Add the name of each App to the list.
-PLUGINS = ["containerlab"]
+PLUGINS = ["containerlab", "nautobot_awx_runner"]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
-# PLUGINS_CONFIG = {
-#     'containerlab': {
-#         'foo': 'bar',
-#         'buzz': 'bazz'
-#     }
-# }
+PLUGINS_CONFIG = {
+    "nautobot_awx_runner": {
+        "base_url": os.getenv("AWX_BASE_URL"),
+        "username": os.getenv("AWX_USERNAME"),
+        "password": os.getenv("AWX_PASSWORD"),
+    }
+}
