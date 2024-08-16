@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from nautobot.apps.models import PrimaryModel
 from nautobot.apps.utils import render_jinja2
+from nautobot.dcim.models import Cable
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
@@ -58,7 +59,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
 
         members = []
         kinds = set()
-        for member in self.dynamic_group.members.all():
+        for member in self.dynamic_group.update_cached_members():
             kind = CLKind.objects.get(platform=member.platform)
             kinds.add(kind)
             members.append(
@@ -77,12 +78,8 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
         return topology_data
 
     def get_member_cables(self):  # noqa: D102
-        cables = set()
-        for device in self.dynamic_group.members.all():
-            for intf in device.interfaces.all():
-                if intf.cable:
-                    cables.add(intf.cable)
-        return cables
+        member_devices = self.dynamic_group.update_cached_members()
+        return Cable.objects.filter(_termination_a_device__in=member_devices, _termination_b_device__in=member_devices)
 
 
 class CLKind(PrimaryModel):

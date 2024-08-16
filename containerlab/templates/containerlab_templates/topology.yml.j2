@@ -19,8 +19,9 @@ topology:
       {{ key }}: {{ value }}
     {%- endfor %}
     {%- endfor %}
-
+  {% if topology.get_member_cables() %}
   links:
     {%- for cable in topology.get_member_cables() %}
     - endpoints: ["{{ cable.termination_a.device.name }}:{{cable.termination_a.name}}", "{{ cable.termination_b.device.name }}:{{cable.termination_b.name}}"]
     {%- endfor %}
+  {% endif %}
