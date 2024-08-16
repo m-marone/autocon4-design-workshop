@@ -846,7 +846,7 @@ def clab(context, action="deploy", clab_filename="clab.yml", topology=None):
     if is_truthy(context.containerlab.local):
         raise Exit("Local development is not supported.")
     if action not in ["deploy", "destroy"]:
-        raise ValueError("Invalid action. Must be either 'deploy' or 'destroy'.")
+        raise Exit("Invalid action. Must be either 'deploy' or 'destroy'.")
     if action == "destroy":
         compose_command = f"run --rm --entrypoint='containerlab {action} -t {clab_filename}' containerlab"
         return docker_compose(context, compose_command, pty=True, echo=True)
