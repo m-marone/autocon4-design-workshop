@@ -1,17 +1,17 @@
 """Containerlab Jobs."""
 
+import platform
 from pathlib import Path
 
+import docker
+from django.utils.text import slugify
+from nautobot.apps.jobs import ChoiceVar, Job, ObjectVar, register_jobs
 from nautobot.core.utils.git import GitRepo as _GitRepo
-from nautobot.extras.jobs import get_task_logger
-from nautobot.apps.jobs import Job, ObjectVar, register_jobs
-from nautobot.extras.models.datasources import GitRepository
 from nautobot.extras.datasources.git import get_repo_from_url_to_path_and_from_branch
-
+from nautobot.extras.jobs import get_task_logger
+from nautobot.extras.models.datasources import GitRepository
 
 from containerlab.models import Topology
-
-from pathlib import Path
 
 LOGGER = get_task_logger(__name__)
 
@@ -93,4 +93,107 @@ class PushContainerlabTopologyToGit(Job):
         repo.push()
 
 
-register_jobs(PushContainerlabTopologyToGit)
+class DeployContainerTopologyToDocker(Job):
+    """Deploy Containerlab Topology to Docker."""
+
+    class Meta:
+        name = "Deploy Containerlab Topology to Docker"
+        description = """
+            Deploy Containerlab Topology to Docker.
+            This only works if your Nautobot and worker instances are running in the same docker compose network!
+        """
+
+    topology = ObjectVar(
+        description="Containerlab Topology",
+        model=Topology,
+    )
+    action = ChoiceVar(
+        description="Action to perform. Deploy or Destroy.",
+        choices=[
+            ("deploy", "Deploy"),
+            ("destroy", "Destroy"),
+        ],
+    )
+
+    def run(self, topology, action="deploy"):
+        """Job run method."""
+        self.logger.info("Topology Model.", extra={"object": topology})
+        docker_client = docker.from_env()
+        worker_container = None
+        docker_containers = docker_client.containers.list()
+        possible_container_names = [platform.node(), platform.node().split(".")[0]]
+        self.logger.debug("Trying to find worker container in docker using names: %s", possible_container_names)
+        for container in docker_containers:
+            if container.id in possible_container_names or container.short_id in possible_container_names:
+                worker_container = container
+                break
+        if worker_container is None:
+            raise RuntimeError(
+                "Unable to locate worker in docker. Ensure the worker is a docker container and the host docker socket is mounted at /var/run/docker.sock."
+            )
+        worker_container.reload()
+
+        # Generate the topology data using the worker's network name and subnet
+        if len(worker_container.attrs["NetworkSettings"]["Networks"]) != 1:
+            raise RuntimeError("Worker container cannot be connected to multiple networks.")
+        worker_network_name = list(worker_container.attrs["NetworkSettings"]["Networks"].keys())[0]
+        worker_network_subnet = docker_client.networks.get(worker_network_name).attrs["IPAM"]["Config"][0]["Subnet"]
+        topology_data = topology.generate_topology_file(
+            mgmt_network=worker_network_name, mgmt_subnet=worker_network_subnet
+        )
+
+        # Find an appropriate mount to write the topology file (a bind mounted directory that is mounted read-write)
+        topology_worker_path = None
+        topology_host_path = None
+        for mount in worker_container.attrs["Mounts"]:
+            if mount["Type"] == "bind" and mount["Mode"] == "rw" and Path(mount["Destination"]).is_dir():
+                topology_worker_path = mount["Destination"]
+                topology_host_path = mount["Source"]
+                break
+
+        if not topology_worker_path:
+            raise RuntimeError(
+                "Unable to find a suitable bind mount directory to write the topology file. Ensure at least one volume is mounted read-write."
+            )
+
+        # Find the host's docker socket path
+        docker_socket_mount = [
+            m for m in worker_container.attrs["Mounts"] if m["Destination"] == "/var/run/docker.sock"
+        ]
+        if not docker_socket_mount:
+            raise RuntimeError(
+                "Unable to find the docker socket path. Ensure the host's docker socket is mounted at /var/run/docker.sock."
+            )
+        else:
+            host_docker_socket_path = docker_socket_mount[0]["Source"]
+
+        # Write the topology file
+        yaml_file_path = Path(topology_worker_path) / f"{slugify(topology.name)}.yml"
+        yaml_file_path.write_text(topology_data)
+        self.logger.info(f"Topology file written to {topology_host_path}/{slugify(topology.name)}.yml on the host.")
+
+        # Run containerlab to deploy/destroy the topology
+        self.logger.info("%sing topology with containerlab.", action.capitalize())
+        docker_output = docker_client.containers.run(
+            "ghcr.io/srl-labs/clab",
+            command=f"containerlab {action} --topo {slugify(topology.name)}.yml",
+            volumes={
+                host_docker_socket_path: {"bind": "/var/run/docker.sock", "mode": "rw"},
+                topology_host_path: {"bind": topology_host_path, "mode": "rw"},
+                "/var/run/netns": {"bind": "/var/run/netns", "mode": "rw"},
+                "/etc/hosts": {"bind": "/etc/hosts", "mode": "rw"},
+                "/var/lib/docker/containers": {"bind": "/var/lib/docker/containers", "mode": "rw"},
+            },
+            working_dir=topology_host_path,
+            network_mode="host",
+            pid_mode="host",
+            privileged=True,
+            remove=True,
+        )
+
+        self.logger.info("Topology %sed.", action)
+        if docker_output.decode():
+            self.logger.info("```%s```", docker_output.decode())
+
+
+register_jobs(PushContainerlabTopologyToGit, DeployContainerTopologyToDocker)

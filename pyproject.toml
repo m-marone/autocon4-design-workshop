@@ -32,6 +32,7 @@ python = ">=3.8,<3.12"
 nautobot = "^2.3.0"
 jsonschema = "^4.23.0"
 nautobot-awx-runner = {path = "nautobot_awx_runner-0.1.0-py3-none-any.whl"}
+docker = "^7.1.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
@@ -114,6 +115,7 @@ ignore = [
     "D213",  # Multi-line docstring summary should start at the second line
 
     # Produces a lot of issues in the current codebase.
+    "D106",  # Docstring missing in public nested class
     "D401",  # First line of docstring should be in imperative mood
     "D407",  # Missing dashed underline after section
     "D416",  # Section name ends in colon
