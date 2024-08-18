@@ -55,6 +55,28 @@
 
 {% block content_right_page %}
     {% with object.validate_topology_file as validate %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Connection Portal</strong>
+            </div>
+            <table class="table table-hover panel-body attr-table">
+            {% for device in object.dynamic_group.members %}
+            <tr>
+                <td>
+                    {{ device | hyperlinked_object }}
+                </td>
+                <td>
+                    <a href="#" 
+                       class="connect-icon"
+                       data-create-url="{% url 'plugins-api:containerlab-api:create-guacamole-device' pk=device.pk %}"
+                       data-url="{% url 'plugins-api:containerlab-api:get-guacamole-clientid' pk=device.pk %}">
+                       <i class="mdi mdi-console"></i>
+                    </a>
+            </td>
+            </tr>
+            {% endfor %}
+            </table>
+        </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Topology File {{ validate.valid | render_boolean }}</strong>
@@ -75,4 +97,45 @@
         </table>
     </div>
     {% endwith %}
+<script>
+    async function createAndRedirect(url, createUrl) {
+        try {
+            // Step 1: Call the create-guacamole-device API
+            let createResponse = await fetch(createUrl, {
+                method: 'POST',
+                headers: {
+                    "X-CSRFTOKEN": "{{ csrf_token }}",
+                },
+            });
+
+            if (!createResponse.ok) {
+                throw new Error('Failed to create the Guacamole device');
+            }
+
+            // Step 2: Call the get-guacamole-clientid API
+            let clientIdResponse = await fetch(url);
+
+            if (!clientIdResponse.ok) {
+                throw new Error('Failed to retrieve the Guacamole client ID');
+            }
+
+            let data = await clientIdResponse.json();
+
+            // Step 3: Redirect to the URL returned by the API
+            window.open(data.url, '_blank');
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred: ' + error.message);
+        }
+    }
+    document.querySelectorAll('.connect-icon').forEach(icon => {
+        icon.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            const createUrl = this.getAttribute('data-create-url'); 
+            const url = this.getAttribute('data-url'); 
+            createAndRedirect(url, createUrl); 
+        });
+    });
+</script>
+
 {% endblock content_right_page %}

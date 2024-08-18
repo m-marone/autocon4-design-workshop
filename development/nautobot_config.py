@@ -132,6 +132,13 @@ PLUGINS = ["containerlab", "nautobot_awx_runner"]
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
+    "nautobot_containerlab": {
+        "guac_url": "http://guacamole:8080",
+        "guac_user": "guacadmin",
+        "guac_pass": "guacadmin",
+        "guac_data_source": "postgresql",
+        "guac_frontend_url": "http://127.0.0.1:8081"
+    },
     "nautobot_awx_runner": {
         "base_url": os.getenv("AWX_BASE_URL"),
         "username": os.getenv("AWX_USERNAME"),
