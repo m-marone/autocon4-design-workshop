@@ -36,11 +36,9 @@ Optionally, you can configure with Guacamole to SSH to your devices.
 
 > Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/app-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
 
-More screenshots can be found in the [Using the App](https://docs.nautobot.com/projects/containerlab/en/latest/user/app_use_cases/) page in the documentation. Here's a quick overview of some of the app's added functionality:
-
-![topology detail]()
-![guacamole gif]()
-![detail_readme]()
+![topology detail](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/topology_detail.png)
+![guacamole gif](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/guac-demo.gif)
+![detail_readme](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
 
 ## Major Features
 
