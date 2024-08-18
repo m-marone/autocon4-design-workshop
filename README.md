@@ -32,10 +32,6 @@ Optionally, you can configure with Guacamole to SSH to your devices.
 
 ## Screenshots
 
-> Developer Note: Add any representative screenshots of the App in action. These images should also be added to the `docs/user/app_use_cases.md` section.
-
-> Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/app-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
-
 ![topology detail](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/topology_detail.png)
 ![guacamole gif](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/guac-demo.gif)
 ![detail_readme](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
@@ -63,10 +59,10 @@ nautobot-server generate_clab_test_data && exit
 
 On the Nautobot Homepage, expand the "CONTAINERLAB" dropdown and click "Topologies".
 
-![Navigation 1](../images/navigation_1.png)
+![Navigation 1](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_1.png)
 
 Once on the list of topologies, click the `lab device` topology. 
-![Navigation 2](../images/navigation_2.png)
+![Navigation 2](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_2.png)
 
 Once on detail page, you have multiple boxes of information as well as a "Containerlab" actions button. This action button allows you to do the following:
 
@@ -74,13 +70,13 @@ Once on detail page, you have multiple boxes of information as well as a "Contai
 - Destroy an already destroyed topology.
 - Push the topology file to a git repo. 
 
-![Topology Detail Action Button](../images/button_options.png)
+![Topology Detail Action Button]([../images/button_options.png](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/button_options.png))
 
 Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI. 
 
 > Note: You must first ensure you have Guacamole running by going through the [Guacamole](../admin/guacamole.md) documentation.
 
-![Topology Detail Action Button](../images/topology_connections.png)
+![Topology Detail Action Button]([../images/topology_connections.png](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/topology_connections.png))
 
 ## Hackathon Experience
 
