@@ -5,13 +5,14 @@ from pathlib import Path
 
 import docker
 from django.utils.text import slugify
-from nautobot.apps.jobs import ChoiceVar, Job, ObjectVar, register_jobs
+from nautobot.apps.jobs import ChoiceVar, Job, JobButtonReceiver, ObjectVar, register_jobs
 from nautobot.core.utils.git import GitRepo as _GitRepo
 from nautobot.extras.datasources.git import get_repo_from_url_to_path_and_from_branch
 from nautobot.extras.jobs import get_task_logger
 from nautobot.extras.models.datasources import GitRepository
 
 from containerlab.models import Topology
+from containerlab.exceptions import GitRepositoryNotFound
 
 LOGGER = get_task_logger(__name__)
 
@@ -50,29 +51,23 @@ class GitRepo(_GitRepo):  # pylint: disable=too-many-instance-attributes
         self.repo.remotes.origin.push().raise_if_error()
 
 
-class PushContainerlabTopologyToGit(Job):
+class PushContainerlabTopologyToGit(JobButtonReceiver):
     """Generate Containerlab Topology and push to git repo."""
 
     class Meta:
+        """Meta class."""
         name = "Push Containerlab Topology to Remote Repository"
 
-    topology = ObjectVar(
-        description="Containerlab Topology",
-        model=Topology,
-    )
-
-    git_repo = ObjectVar(
-        description="Git Repository",
-        model=GitRepository,
-        query_params={
-            "provided_contents": "containerlab.topology",
-        },
-    )
-
-    def run(self, topology, git_repo):
+    def receive_job_button(self, obj):
         """Job run method."""
+        topology = obj
         self.logger.info("Topology Model.", extra={"object": topology})
-        topology_repo = git_repo
+        try:
+            topology_repo = GitRepository.objects.filter(provided_contents__contains='containerlab.topology')[0]
+        except IndexError:
+            msg = "Please configure a GitRepository that provides containerlab.topology content."
+            self.logger.error(msg)
+            raise GitRepositoryNotFound(msg)
         git_info = get_repo_from_url_to_path_and_from_branch(topology_repo)
         repo = GitRepo(
             topology_repo.filesystem_path,
@@ -83,7 +78,8 @@ class PushContainerlabTopologyToGit(Job):
         )
 
         topology_data = topology.generate_topology_file()
-        topology_path = f"/opt/nautobot/git/{topology_repo.slug}/{topology.name}"
+        # Should replace '/opt/nautobot' with $HOME/
+        topology_path = f"/opt/nautobot/git/{topology_repo.slug}/containerlab_topologies/{topology.name}"
 
         Path(topology_path).mkdir(parents=True, exist_ok=True)
 
