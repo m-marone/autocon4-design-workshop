@@ -22,6 +22,6 @@ class ContainerlabConfig(NautobotAppConfig):
     max_version = "2.9999"
     default_settings = {}
     caching_config = {}
-
+    docs_view_name = "plugins:containerlab:docs"
 
 config = ContainerlabConfig  # pylint:disable=invalid-name
