@@ -41,6 +41,7 @@ Optionally, you can configure with Guacamole to SSH to your devices.
 - Dynamically create Containerlab topology files
 - Use the topology file to create a Docker-in-Docker Containerlab locally.
 - Use the topology file to deploy ContainerLab into an AWX instance (WIP).
+- SSH from your browser with Guacamole.
 - Check topology validity using [jsonschema](https://json-schema.org/).
 
 ## Try it out!
