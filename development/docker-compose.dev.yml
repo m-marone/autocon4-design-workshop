@@ -6,7 +6,11 @@
 services:
   guacamole-preparation:
     image: guacamole/guacamole
-    entrypoint: [ "bash", "-c", "/opt/guacamole/bin/initdb.sh --postgresql > /tmp/init/initdb.sql"]
+    # This requires you to setup the sql file for guacamole, but since it is the second DB we add the `\connect` to it.
+    entrypoint: 
+      - "bash"
+      - "-c"
+      - "echo '\\connect guacamole_db;' > /tmp/init/02-initdb.sql && /opt/guacamole/bin/initdb.sh --postgresql >> /tmp/init/02-initdb.sql"
     user: "0"  # This sets the user to root (user ID 0), as I could not figure out way around exporting initdb.sql to a names volume
     volumes:
       - "guac_init:/tmp/init"
@@ -18,9 +22,7 @@ services:
     environment:
       GUACD_HOSTNAME: guacd
       POSTGRES_DB: guacamole_db
-      POSTGRES_HOSTNAME: db-guac
-      POSTGRES_PASSWORD: changeme
-      POSTGRES_USER: nautobot
+      POSTGRES_HOSTNAME: db
       # LOGBACK_LEVEL: debug
     env_file:
       - "development.env"
@@ -30,15 +32,15 @@ services:
   guacd:
     image: "guacamole/guacd"
     volumes:
-    - ./drive:/drive:rw
-    - ./record:/record:rw
+    - drive:/drive:rw
+    - record:/record:rw
     ports:
       - "4822:4822"
     env_file:
       - "development.env"
       - "creds.env"
     depends_on:
-    - db-guac
+    - db
   nautobot:
     command: "nautobot-server runserver 0.0.0.0:8080"
     ports:
@@ -81,34 +83,14 @@ services:
       - |
         python /opt/nautobot/check_migrations.py && \
         "watchmedo auto-restart --directory './' --pattern '*.py' --recursive -- nautobot-server celery beat -l WARNING"  ## $$ because of docker-compose
-    # depends_on:
-    #   nautobot:
-    #     condition: service_completed_successfully
     volumes:
       - "./check_migrations.py:/opt/nautobot/check_migrations.py"
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
 
-  db-guac:
-    image: "postgres:9.6.9"
-    environment:
-      PGDATA: /var/lib/postgresql/guac_data/guacamole
-      POSTGRES_DB: guacamole_db
-      POSTGRES_USER: nautobot
-      POSTGRES_PASSWORD: changeme
-    restart: always
-    depends_on:
-    - guacamole-preparation
-    volumes:
-    - "guac_data:/var/lib/postgresql/data"
-    - guac_init:/docker-entrypoint-initdb.d:ro
-    - postgres_data:/var/lib/postgresql/data:rw
-
 volumes:
-  guac_data: {}
   record: {}
   drive: {}
-  postgres_data: {}
   guac_init: {}
 
 # To expose postgres or redis to the host uncomment the following
