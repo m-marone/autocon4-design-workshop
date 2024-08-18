@@ -32,9 +32,12 @@ Optionally, you can configure with Guacamole to SSH to your devices.
 
 ## Screenshots
 
+**Topology Detail**
 ![topology detail](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/topology_detail.png)
+**Guacamole Integration**
 ![guacamole gif](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/guac-demo.gif)
-![detail_readme](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
+**Mermaid Diagram**
+![Mermaid Diagram](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
 
 ## Major Features
 
