@@ -29,8 +29,8 @@ class ContainerlabConfig(NautobotAppConfig):
     def ready(self):
         """Method to call signals."""
         super().ready()
-        from containerlab.signals import push_to_repo_job_button
-        nautobot_database_ready.connect(push_to_repo_job_button, sender=self)
+        from containerlab.signals import create_job_buttons
+        nautobot_database_ready.connect(create_job_buttons, sender=self)
 
 
 config = ContainerlabConfig  # pylint:disable=invalid-name
