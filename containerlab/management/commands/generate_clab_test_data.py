@@ -86,10 +86,11 @@ class Command(BaseCommand):
         CLKind.objects.get_or_create(kind="ceos", image="ceos:4.32.1F", platform=platform)
         dynamic_group, _ = DynamicGroup.objects.get_or_create(
             name="lab devices",
-            group_type=DynamicGroupTypeChoices.TYPE_STATIC,
+            group_type=DynamicGroupTypeChoices.TYPE_DYNAMIC_FILTER,
             content_type=ContentType.objects.get_for_model(Device),
         )
-        dynamic_group.add_members([rtr1, rtr2, rtr3])
+        dynamic_group.filter = {"status": ["Active"], "location": ["NYC1"]}
+        dynamic_group.validated_save()
         Topology.objects.get_or_create(name="lab devices", dynamic_group=dynamic_group)
 
         self.stdout.write("Test data generated successfully.")
