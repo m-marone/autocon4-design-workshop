@@ -28,6 +28,23 @@
             </tr>
         </table>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Topology Diagram</strong>
+        </div>
+        <table class="table table-hover panel-body attr-table">
+            <tr>
+                <td>
+                    <pre class="mermaid">
+                        {{ object.generate_mermaid_diagram }}
+                    </pre>
+                </td>
+            </tr>
+        </table>
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        </script>
+    </div>
 {% endblock content_left_page %}
 
 {% block content_right_page %}
