@@ -63,19 +63,6 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     def generate_topology_file_dict(self, **kwargs):
         return yaml.safe_load(self.generate_topology_file())
 
-    # def get_custom_template(self, **kwargs):
-    #     """Get custom clab template."""
-    #     try:
-    #         template_repo = GitRepository.objects.filter(provided_contents__contains="containerlab.template")[0]
-    #         template_path = get_repo_from_url_to_path_and_from_branch(template_repo).to_path
-    #         # Add check to make sure returned path exists
-    #     except IndexError:
-    #         return False
-
-    #     with open(template_path) as handle:
-    #         template = handle.read()
-    #     return template
-
     def generate_topology_file(self, **kwargs):
         """Generate a containerlab topology file."""
         if self.custom_template:
