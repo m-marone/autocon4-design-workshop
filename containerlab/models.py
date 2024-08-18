@@ -1,19 +1,19 @@
 """Models for Containerlab."""
 
-import os
 import json
-import yaml
+import os
 
+import yaml
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from nautobot.apps.models import PrimaryModel
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+from jsonschema.validators import Draft7Validator
+from nautobot.apps.models import PrimaryModel, BaseModel
 from nautobot.apps.utils import render_jinja2
 from nautobot.dcim.models import Cable
-
-
-from jsonschema.validators import Draft7Validator
-from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
+from nautobot.extras.datasources.git import get_repo_from_url_to_path_and_from_branch
+from nautobot.extras.models.datasources import GitRepository
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
@@ -33,13 +33,20 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     description = models.CharField(max_length=255, blank=True)
     dynamic_group = models.ForeignKey(
         to="extras.DynamicGroup",
-        on_delete=models.CASCADE,
-        related_name="containerlab_topologies",
+        on_delete=models.PROTECT,
+        related_name="containerlab_topology",
         help_text="DynamicGroup from which to build the topology file",
         blank=True,
         null=True,
     )
-
+    custom_template = models.ForeignKey(
+        to='containerlab.TopologyTemplate',
+        on_delete=models.PROTECT,
+        related_name="containerlab_topology",
+        help_text="Custom template to use for topology file",
+        blank=True,
+        null=True,
+    )
     is_dynamic_group_associable_model = False
 
     class Meta:
@@ -71,15 +78,20 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
 
     def generate_topology_file(self, **kwargs):
         """Generate a containerlab topology file."""
-        with open(
-            os.path.join(
-                os.path.dirname(__file__),
-                "templates",
-                "containerlab_templates",
-                "topology.yml.j2",
-            )
-        ) as handle:
-            template = handle.read()
+        if self.custom_template:
+            # Try to find custom template
+            template = self.custom_template.template_content
+        # Custom Template not found, use default template
+        else:
+            with open(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    "templates",
+                    "containerlab_templates",
+                    "topology.yml.j2",
+                )
+            ) as handle:
+                template = handle.read()
 
         members = []
         kinds = set()
@@ -175,3 +187,23 @@ class CLKind(PrimaryModel):
 
         self._clean_exposed_ports()
         self._clean_node_extras()
+
+class TopologyTemplate(BaseModel):  # pylint: disable=too-many-ancestors
+    """Base model for Containerlab app."""
+
+    name = models.CharField(
+        max_length=255, unique=True, help_text="Name of Containerlab Topology"
+    )
+    template_content = models.TextField(blank=True)
+    is_dynamic_group_associable_model = False
+
+    class Meta:
+        """Meta class."""
+
+        ordering = ["name"]
+        verbose_name = "Topology Template"
+        verbose_name_plural = "Topology Templates"
+
+    def __str__(self):
+        """Stringify instance."""
+        return self.name

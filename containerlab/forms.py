@@ -1,19 +1,13 @@
 """Forms for containerlab."""
 from django import forms
 from nautobot.apps.forms import (
+    DynamicModelChoiceField,
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
     TagsBulkEditFormMixin,
-    DynamicModelChoiceField,
 )
 from nautobot.extras.models import DynamicGroup
-from nautobot.apps.forms import (
-    NautobotBulkEditForm,
-    NautobotFilterForm,
-    NautobotModelForm,
-    TagsBulkEditFormMixin,
-)
 
 from containerlab import models
 
@@ -33,6 +27,7 @@ class TopologyForm(NautobotModelForm):  # pylint: disable=too-many-ancestors
             "name",
             "description",
             "dynamic_group",
+            "custom_template",
         ]
 
 

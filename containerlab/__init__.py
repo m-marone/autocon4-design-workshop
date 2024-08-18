@@ -3,7 +3,9 @@
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-from nautobot.apps import NautobotAppConfig
+from nautobot.apps import NautobotAppConfig, nautobot_database_ready
+
+# from .signals import push_to_repo_job_button
 
 __version__ = metadata.version(__name__)
 
@@ -23,5 +25,12 @@ class ContainerlabConfig(NautobotAppConfig):
     default_settings = {}
     caching_config = {}
     docs_view_name = "plugins:containerlab:docs"
+
+    def ready(self):
+        """Method to call signals."""
+        super().ready()
+        from containerlab.signals import push_to_repo_job_button
+        nautobot_database_ready.connect(push_to_repo_job_button, sender=self)
+
 
 config = ContainerlabConfig  # pylint:disable=invalid-name
