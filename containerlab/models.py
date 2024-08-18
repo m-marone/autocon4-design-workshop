@@ -9,11 +9,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 from jsonschema.validators import Draft7Validator
-from nautobot.apps.models import PrimaryModel, BaseModel
+from nautobot.apps.models import BaseModel, PrimaryModel
 from nautobot.apps.utils import render_jinja2
 from nautobot.dcim.models import Cable
-from nautobot.extras.datasources.git import get_repo_from_url_to_path_and_from_branch
-from nautobot.extras.models.datasources import GitRepository
 
 # from nautobot.extras.utils import extras_features
 # If you want to use the extras_features decorator please reference the following documentation
@@ -27,9 +25,7 @@ from nautobot.extras.models.datasources import GitRepository
 class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     """Base model for Containerlab app."""
 
-    name = models.CharField(
-        max_length=255, unique=True, help_text="Name of Containerlab Topology"
-    )
+    name = models.CharField(max_length=255, unique=True, help_text="Name of Containerlab Topology")
     description = models.CharField(max_length=255, blank=True)
     dynamic_group = models.ForeignKey(
         to="extras.DynamicGroup",
@@ -40,7 +36,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
         null=True,
     )
     custom_template = models.ForeignKey(
-        to='containerlab.TopologyTemplate',
+        to="containerlab.TopologyTemplate",
         on_delete=models.PROTECT,
         related_name="containerlab_topology",
         help_text="Custom template to use for topology file",
@@ -103,8 +99,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
                     "obj": member,
                     "kind": kind,
                     "node_extras": {
-                        k: render_jinja2(template_code=v, context={"obj": member})
-                        for k, v in kind.node_extras.items()
+                        k: render_jinja2(template_code=v, context={"obj": member}) for k, v in kind.node_extras.items()
                     },
                 }
             )
@@ -122,9 +117,7 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     def validate_topology_file(self, **kwargs):
         """Validate generated topology file."""
         topology_yaml = yaml.safe_load(self.generate_topology_file())
-        with open(
-            os.path.join(os.path.dirname(__file__), "utils", "topology_schema.json")
-        ) as file:
+        with open(os.path.join(os.path.dirname(__file__), "utils", "topology_schema.json")) as file:
             schema = json.load(file)
             Draft7Validator.check_schema(schema)
 
@@ -146,9 +139,7 @@ class CLKind(PrimaryModel):
         blank=True,
         help_text="These configurations are flattened an applied to each node. This field has access to obj object which represents each device.",
     )
-    platform = models.ForeignKey(
-        to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind"
-    )
+    platform = models.ForeignKey(to="dcim.Platform", on_delete=models.PROTECT, related_name="clkind")
     exposed_ports = models.CharField(max_length=100, blank=True)
 
     class Meta:
@@ -167,18 +158,14 @@ class CLKind(PrimaryModel):
 
             # Check if any value is empty (e.g., ",," or leading/trailing commas)
             if any(not v.strip() for v in values):
-                raise ValidationError(
-                    {"exposed_ports": "Invalid Comma-Separated string."}
-                )
+                raise ValidationError({"exposed_ports": "Invalid Comma-Separated string."})
 
     def _clean_node_extras(self):
         """Perform validation of the `node_extras` field."""
         # Ensure ports isn't defined in Extra Node configuration. While it is valid, we use the exposed ports field.
         if "ports" in self.node_extras.keys():
             raise ValidationError(
-                {
-                    "node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."
-                }
+                {"node_extras": "Node Extras must not define ports. Please use the 'Exposed Ports' field."}
             )
 
     def clean(self):
@@ -188,12 +175,11 @@ class CLKind(PrimaryModel):
         self._clean_exposed_ports()
         self._clean_node_extras()
 
+
 class TopologyTemplate(BaseModel):  # pylint: disable=too-many-ancestors
     """Base model for Containerlab app."""
 
-    name = models.CharField(
-        max_length=255, unique=True, help_text="Name of Containerlab Topology"
-    )
+    name = models.CharField(max_length=255, unique=True, help_text="Name of Containerlab Topology")
     template_content = models.TextField(blank=True)
     is_dynamic_group_associable_model = False
 

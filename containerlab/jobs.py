@@ -15,7 +15,6 @@ from nautobot.extras.jobs import get_task_logger
 from nautobot.extras.models.datasources import GitRepository
 
 from containerlab.exceptions import GitRepositoryNotFound
-from containerlab.models import Topology
 
 LOGGER = get_task_logger(__name__)
 
@@ -32,10 +31,7 @@ def deploy_clab(job_obj, topology, action="deploy"):
         possible_container_names,
     )
     for container in docker_containers:
-        if (
-            container.id in possible_container_names
-            or container.short_id in possible_container_names
-        ):
+        if container.id in possible_container_names or container.short_id in possible_container_names:
             worker_container = container
             break
     if worker_container is None:
@@ -47,25 +43,15 @@ def deploy_clab(job_obj, topology, action="deploy"):
     # Generate the topology data using the worker's network name and subnet
     if len(worker_container.attrs["NetworkSettings"]["Networks"]) != 1:
         raise RuntimeError("Worker container cannot be connected to multiple networks.")
-    worker_network_name = list(
-        worker_container.attrs["NetworkSettings"]["Networks"].keys()
-    )[0]
-    worker_network_subnet = docker_client.networks.get(worker_network_name).attrs[
-        "IPAM"
-    ]["Config"][0]["Subnet"]
-    topology_data = topology.generate_topology_file(
-        mgmt_network=worker_network_name, mgmt_subnet=worker_network_subnet
-    )
+    worker_network_name = list(worker_container.attrs["NetworkSettings"]["Networks"].keys())[0]
+    worker_network_subnet = docker_client.networks.get(worker_network_name).attrs["IPAM"]["Config"][0]["Subnet"]
+    topology_data = topology.generate_topology_file(mgmt_network=worker_network_name, mgmt_subnet=worker_network_subnet)
 
     # Find an appropriate mount to write the topology file (a bind mounted directory that is mounted read-write)
     topology_worker_path = None
     topology_host_path = None
     for mount in worker_container.attrs["Mounts"]:
-        if (
-            mount["Type"] == "bind"
-            and mount["Mode"] == "rw"
-            and Path(mount["Destination"]).is_dir()
-        ):
+        if mount["Type"] == "bind" and mount["Mode"] == "rw" and Path(mount["Destination"]).is_dir():
             topology_worker_path = mount["Destination"]
             topology_host_path = mount["Source"]
             break
@@ -76,11 +62,7 @@ def deploy_clab(job_obj, topology, action="deploy"):
         )
 
     # Find the host's docker socket path
-    docker_socket_mount = [
-        m
-        for m in worker_container.attrs["Mounts"]
-        if m["Destination"] == "/var/run/docker.sock"
-    ]
+    docker_socket_mount = [m for m in worker_container.attrs["Mounts"] if m["Destination"] == "/var/run/docker.sock"]
     if not docker_socket_mount:
         raise RuntimeError(
             "Unable to find the docker socket path. Ensure the host's docker socket is mounted at /var/run/docker.sock."
@@ -91,15 +73,18 @@ def deploy_clab(job_obj, topology, action="deploy"):
     # Write the topology file
     yaml_file_path = Path(topology_worker_path) / f"{slugify(topology.name)}.yml"
     yaml_file_path.write_text(topology_data)
-    job_obj.logger.info(
-        f"Topology file written to {topology_host_path}/{slugify(topology.name)}.yml on the host."
-    )
+    job_obj.logger.info(f"Topology file written to {topology_host_path}/{slugify(topology.name)}.yml on the host.")
 
     # Run containerlab to deploy/destroy the topology
     job_obj.logger.info("%sing topology with containerlab.", action.capitalize())
+    docker_command = f"containerlab {action} --topo {slugify(topology.name)}.yml"
+    if action == "deploy":
+        docker_command += " --reconfigure"
+    else:
+        docker_command += " --cleanup --keep-mgmt-net"
     docker_output = docker_client.containers.run(
         "ghcr.io/srl-labs/clab",
-        command=f"containerlab {action} --topo {slugify(topology.name)}.yml",
+        command=docker_command,
         volumes={
             host_docker_socket_path: {"bind": "/var/run/docker.sock", "mode": "rw"},
             topology_host_path: {"bind": topology_host_path, "mode": "rw"},
@@ -169,9 +154,7 @@ class PushContainerlabTopologyToGit(JobButtonReceiver):
         topology = obj
         self.logger.info("Topology Model.", extra={"object": topology})
         try:
-            topology_repo = GitRepository.objects.filter(
-                provided_contents__contains="containerlab.topology"
-            )[0]
+            topology_repo = GitRepository.objects.filter(provided_contents__contains="containerlab.topology")[0]
         except IndexError:
             msg = "Please configure a GitRepository that provides containerlab.topology content."
             self.logger.error(msg)
