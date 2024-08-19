@@ -5,6 +5,7 @@ will have issues with the migrations or around the same time migrations are runn
 import time
 from django.db import ProgrammingError
 import nautobot
+
 nautobot.setup()
 
 from nautobot.extras.models.jobs import ScheduledJob

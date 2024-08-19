@@ -6,28 +6,38 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('containerlab', '0002_alter_topology_dynamic_group'),
+        ("containerlab", "0002_alter_topology_dynamic_group"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TopologyTemplate',
+            name="TopologyTemplate",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
-                ('name', models.CharField(max_length=255, unique=True)),
-                ('template_content', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, unique=True)),
+                ("template_content", models.TextField(blank=True)),
             ],
             options={
-                'verbose_name': 'Topology Template',
-                'verbose_name_plural': 'Topology Templates',
-                'ordering': ['name'],
+                "verbose_name": "Topology Template",
+                "verbose_name_plural": "Topology Templates",
+                "ordering": ["name"],
             },
         ),
         migrations.AddField(
-            model_name='topology',
-            name='custom_template',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='containerlab_topology', to='containerlab.topologytemplate'),
+            model_name="topology",
+            name="custom_template",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="containerlab_topology",
+                to="containerlab.topologytemplate",
+            ),
         ),
     ]

@@ -1,4 +1,5 @@
 """Create fixtures for tests."""
+
 from containerlab.models import Topology
 
 

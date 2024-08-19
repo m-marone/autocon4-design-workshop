@@ -9,54 +9,94 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('dcim', '0062_module_data_migration'),
-        ('extras', '0113_saved_views'),
+        ("dcim", "0062_module_data_migration"),
+        ("extras", "0113_saved_views"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Topology',
+            name="Topology",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('last_updated', models.DateTimeField(auto_now=True, null=True)),
-                ('_custom_field_data', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('name', models.CharField(max_length=255, unique=True)),
-                ('description', models.CharField(blank=True, max_length=255)),
-                ('dynamic_group', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='containerlab_topology', to='extras.dynamicgroup')),
-                ('tags', nautobot.core.models.fields.TagsField(through='extras.TaggedItem', to='extras.Tag')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
+                ("last_updated", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "_custom_field_data",
+                    models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder),
+                ),
+                ("name", models.CharField(max_length=255, unique=True)),
+                ("description", models.CharField(blank=True, max_length=255)),
+                (
+                    "dynamic_group",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="containerlab_topology",
+                        to="extras.dynamicgroup",
+                    ),
+                ),
+                ("tags", nautobot.core.models.fields.TagsField(through="extras.TaggedItem", to="extras.Tag")),
             ],
             options={
-                'verbose_name': 'Containerlab Topology',
-                'verbose_name_plural': 'Containerlab Topologies',
-                'ordering': ['name'],
+                "verbose_name": "Containerlab Topology",
+                "verbose_name_plural": "Containerlab Topologies",
+                "ordering": ["name"],
             },
-            bases=(nautobot.extras.models.mixins.DynamicGroupMixin, nautobot.extras.models.mixins.NotesMixin, models.Model),
+            bases=(
+                nautobot.extras.models.mixins.DynamicGroupMixin,
+                nautobot.extras.models.mixins.NotesMixin,
+                models.Model,
+            ),
         ),
         migrations.CreateModel(
-            name='CLKind',
+            name="CLKind",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('last_updated', models.DateTimeField(auto_now=True, null=True)),
-                ('_custom_field_data', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('kind', models.CharField(max_length=25)),
-                ('image', models.CharField(max_length=100)),
-                ('node_extras', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('exposed_ports', models.CharField(blank=True, max_length=100)),
-                ('platform', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='clkind', to='dcim.platform')),
-                ('tags', nautobot.core.models.fields.TagsField(through='extras.TaggedItem', to='extras.Tag')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
+                ("last_updated", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "_custom_field_data",
+                    models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder),
+                ),
+                ("kind", models.CharField(max_length=25)),
+                ("image", models.CharField(max_length=100)),
+                (
+                    "node_extras",
+                    models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder),
+                ),
+                ("exposed_ports", models.CharField(blank=True, max_length=100)),
+                (
+                    "platform",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, related_name="clkind", to="dcim.platform"
+                    ),
+                ),
+                ("tags", nautobot.core.models.fields.TagsField(through="extras.TaggedItem", to="extras.Tag")),
             ],
             options={
-                'verbose_name': 'ContainerLab Kind',
-                'verbose_name_plural': 'ContainerLab Kinds',
-                'ordering': ['kind'],
-                'unique_together': {('kind', 'image')},
+                "verbose_name": "ContainerLab Kind",
+                "verbose_name_plural": "ContainerLab Kinds",
+                "ordering": ["kind"],
+                "unique_together": {("kind", "image")},
             },
-            bases=(nautobot.extras.models.mixins.DynamicGroupMixin, nautobot.extras.models.mixins.NotesMixin, models.Model),
+            bases=(
+                nautobot.extras.models.mixins.DynamicGroupMixin,
+                nautobot.extras.models.mixins.NotesMixin,
+                models.Model,
+            ),
         ),
     ]

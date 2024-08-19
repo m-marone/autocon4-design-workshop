@@ -6,8 +6,8 @@ from django.urls import path
 from containerlab.api import views
 
 urlpatterns = [
-    path('create-guacamole-device/<uuid:pk>', views.CreateGuacamoleDevice.as_view(), name='create-guacamole-device'),
-    path('get-guacamole-clientid/<uuid:pk>', views.GetGuacamoleClient.as_view(), name='get-guacamole-clientid'),
+    path("create-guacamole-device/<uuid:pk>", views.CreateGuacamoleDevice.as_view(), name="create-guacamole-device"),
+    path("get-guacamole-clientid/<uuid:pk>", views.GetGuacamoleClient.as_view(), name="get-guacamole-clientid"),
 ]
 
 router = OrderedDefaultRouter()

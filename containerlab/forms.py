@@ -1,4 +1,5 @@
 """Forms for containerlab."""
+
 from django import forms
 from nautobot.apps.forms import (
     DynamicModelChoiceField,
@@ -15,9 +16,7 @@ from containerlab import models
 class TopologyForm(NautobotModelForm):  # pylint: disable=too-many-ancestors
     """Topology creation/edit form."""
 
-    dynamic_group = DynamicModelChoiceField(
-        queryset=DynamicGroup.objects.all(), label="Dynamic Group"
-    )
+    dynamic_group = DynamicModelChoiceField(queryset=DynamicGroup.objects.all(), label="Dynamic Group")
 
     class Meta:
         """Meta attributes."""
@@ -31,14 +30,10 @@ class TopologyForm(NautobotModelForm):  # pylint: disable=too-many-ancestors
         ]
 
 
-class TopologyBulkEditForm(
-    TagsBulkEditFormMixin, NautobotBulkEditForm
-):  # pylint: disable=too-many-ancestors
+class TopologyBulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # pylint: disable=too-many-ancestors
     """Topology bulk edit form."""
 
-    pk = forms.ModelMultipleChoiceField(
-        queryset=models.Topology.objects.all(), widget=forms.MultipleHiddenInput
-    )
+    pk = forms.ModelMultipleChoiceField(queryset=models.Topology.objects.all(), widget=forms.MultipleHiddenInput)
     description = forms.CharField(required=False)
 
     class Meta:
@@ -82,9 +77,7 @@ class CLKindForm(NautobotModelForm):
 class CLKindBulkEditForm(NautobotBulkEditForm):
     """ContinaerLab Kind bulk edit form."""
 
-    pk = forms.ModelMultipleChoiceField(
-        queryset=models.CLKind.objects.all(), widget=forms.MultipleHiddenInput
-    )
+    pk = forms.ModelMultipleChoiceField(queryset=models.CLKind.objects.all(), widget=forms.MultipleHiddenInput)
     image = forms.CharField(required=False)
 
     class Meta:
@@ -99,7 +92,5 @@ class CLKindFilterForm(NautobotFilterForm):
     model = models.CLKind
     field_order = ["q", "kind"]
 
-    q = forms.CharField(
-        required=False, label="Search", help_text="Search within 'kind'."
-    )
+    q = forms.CharField(required=False, label="Search", help_text="Search within 'kind'.")
     kind = forms.CharField(required=False, label="kind")
