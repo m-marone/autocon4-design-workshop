@@ -75,7 +75,7 @@
                        data-url="{% url 'plugins-api:containerlab-api:get-guacamole-clientid' pk=device.pk %}">
                        <i class="mdi mdi-console"></i>
                     </a>
-            </td>
+                </td>
             </tr>
             {% endfor %}
             </table>
@@ -94,7 +94,14 @@
             {% endif %}
             <tr>
                 <td>
-                    {% include 'extras/inc/json_data.html' with data=object.generate_topology_file_dict format="yaml" %}
+                    <span id="clab-yaml">
+                        {% include 'extras/inc/json_data.html' with data=object.generate_topology_file_dict format="yaml" %}
+                    </span>
+                    <span class="config_hover_button">
+                        <button class="btn btn-inline btn-default hover_copy_button" data-clipboard-target="#clab-yaml">
+                            <span class="mdi mdi-content-copy"></span>
+                        </button>
+                    </span>
                 </td>
             </tr>
         </table>
