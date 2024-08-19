@@ -4,8 +4,15 @@
 {% load static %}
 
 {% block content_left_page %}
+    <style>
+        .save-topology-icon {
+           float: right;
+           cursor: pointer;
+        }
+    </style>
     <script type="text/javascript" src="{% static 'nautobot_containerlab/mermaid-10.9.1/mermaid.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'nautobot_containerlab/guac.js' %}"></script>
+    <script type="text/javascript" src="{% static 'nautobot_containerlab/html2canvas-1.4.1/html2canvas.min.js' %}"></script>
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Topology</strong>
@@ -40,16 +47,19 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Topology Diagram</strong>
+            <span class="glyphicon glyphicon-save save-topology-icon"></span>
         </div>
-        <table class="table table-hover panel-body attr-table">
-            <tr>
-                <td>
-                    <pre class="mermaid">
-                        {{ object.generate_mermaid_diagram }}
-                    </pre>
-                </td>
-            </tr>
-        </table>
+        <div id="mermaid-topology">
+            <table class="table table-hover panel-body attr-table">
+                <tr>
+                    <td>
+                        <pre class="mermaid">
+                            {{ object.generate_mermaid_diagram }}
+                        </pre>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <script type="module">
             mermaid.initialize({ startOnLoad: true });
         </script>
@@ -117,5 +127,24 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveButton = document.querySelector('.save-topology-icon');
+        const topologyDiv = document.getElementById('mermaid-topology');
+        
+        // Retrieve the object name from the Django context
+        const objectName = "{{ object.name|slugify }}";
 
+        saveButton.addEventListener('click', function() {
+            html2canvas(topologyDiv).then(function(canvas) {
+                let link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                
+                // Prepend the object name to the filename
+                link.download = objectName + '-topology-diagram.png';
+                link.click();
+            });
+        });
+    });
+</script>
 {% endblock content_right_page %}
