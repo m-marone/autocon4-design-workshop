@@ -24,33 +24,40 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
 
 ## Overview
 
-This Nautobot App allows you to model the topology of your Nautobot Devices and generate a network lab using [Containerlab](https://containerlab.dev/). The lab can then be deployed to a local machine for development or a remote AWS lab using Terraform (TODO).
+This Nautobot App allows you to model the Topology of your virtual network labs and deploy them through the Nautobot UI via [Containerlab](https://containerlab.dev/). The labs can be deployed to a local machine for development or a remote AWS lab using Terraform (TODO).
 
-Optionally, a [Remote Topology File](https://containerlab.dev/cmd/deploy/#remote-topology-files) can be retrieved from a GitHub or GitLab repository to deploy a shared container lab environment.
-
-Optionally, you can configure with Guacamole to SSH to your devices.
-
+Optionally, you can configure with Guacamole to SSH to your devices from the Nautobot UI.
 
 ## Screenshots
 
 **Topology Detail**
 ![topology detail](./docs/images/topology_detail.png)
 
+**Topology Deployment**
+![topology detail](./docs/images/topology_deploy.png)
+
 **Guacamole Integration**
 ![guacamole gif](./docs/images/guac-demo.gif)
 
-**Mermaid Diagram**
+**Topology Diagram**
 ![Mermaid Diagram](./docs/images/detail_readme.png)
+
+**Defining Startup Cfg for Every Node**
+![Kind Configuration](./docs/images/kind_with_startup_cfg.png)
+![Resulting Topology](./docs/images/topology_with_startup_cfg.png)
 
 ## Major Features
 
-- Dynamically create Containerlab topology files
-- Use the topology file to create a Docker-in-Docker Containerlab locally.
-- Use the topology file to deploy ContainerLab into an AWX instance (WIP).
-- SSH from your browser with Guacamole.
-- Check topology validity using [jsonschema](https://json-schema.org/).
+- Dynamically create Containerlab topology files and diagrams from DynamicGroups.
+- From the Topology view, deploy a Docker-in-Docker Containerlab locally.
+- From the Topology view, deploy ContainerLab into an AWX instance (WIP).
+- From the Topology view, SSH to devices using Guacamole.
+- Automatically validate topology file contents using [Containerlab's json schema definition](https://github.com/srl-labs/containerlab/blob/main/schemas/clab.schema.json).
+- The default topology template can be overridden by loading in custom templates from a git datasource.
+- The default topology template can be modified by passing in Jinja2 content into the relevant Kind objects. See screenshots for defining remote startup-config path for each node.
+- Push topology files to a remote git repository to share lab deployments.
 
-## Try it out!
+## Try it out
 
 <!-- The Quickstart guide to deploying a dev environment can be found [here]() -->
 
@@ -62,24 +69,24 @@ invoke migrate start cli
 nautobot-server generate_clab_test_data && exit
 ```
 
-### Navigate to Lab Topology 
+### Navigate to Lab Topology
 
 On the Nautobot Homepage, expand the "CONTAINERLAB" dropdown and click "Topologies".
 
 ![Navigation 1](./docs/images/navigation_1.png)
 
-Once on the list of topologies, click the `lab device` topology. 
+Once on the list of topologies, click the `lab device` topology.
 ![Navigation 2](./docs/images/navigation_2.png)
 
-Once on detail page, you have multiple boxes of information as well as a "Containerlab" actions button. This action button allows you to do the following:
+Once on detail page, you have multiple boxes of information as well as a "Containerlab Actions" button. This action button allows you to do the following:
 
-- Deploy Containerlab topology from the presented topology file. 
-- Destroy an already destroyed topology.
-- Push the topology file to a git repo. 
+- Deploy Containerlab topology from the presented topology file.
+- Destroy an already deployed topology.
+- Push the topology file to a git repo.
 
 ![Topology Detail Action Button](./docs/images/button_options.png)
 
-Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI. 
+Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI.
 
 > Note: You must first ensure you have Guacamole running by going through the [Guacamole](./docs/admin/guacamole.md) documentation.
 
@@ -87,10 +94,9 @@ Once a topology is deployed, you can connect to your devices via the "Connection
 
 ## Hackathon Experience
 
- - The level of collaboration and expertise between the team was astounding. Everyone is so helpful and smart and it's awesome to see how much can get done when a group of like-minded people put their heads together. 
+- The level of collaboration and expertise between the team was astounding. Everyone is so helpful and smart and it's awesome to see how much can get done when a group of like-minded people put their heads together. 
 
-
-## Next Steps
+## Solution Roadmap
 
 Our team came up with so many great ideas to continue pushing this app's capabilities. Some worth noting include
 
@@ -98,13 +104,12 @@ Our team came up with so many great ideas to continue pushing this app's capabil
 - Start/Stop control of Containerlab and individual devices within the lab.
 - Visualization Control (e.g pixel perfect)
 
-
-On top of those ideas, there are more pressing ones that would need to be addressed to ensure a production version of this app is up to snuff. 
+On top of those ideas, there are more pressing ones that would need to be addressed to ensure a production version of this app is up to snuff.
 
 ### Interface Mapping
 
-Virtual images hardly ever match the amount/type of interfaces the physical device it's representing. Along with that, ensuring the appropriate management interface that ContainerLab expects to see exists needs to be taken into account. We discussed using custom fields on the interfaces to do the mapping and/or a find and replace on the actual config. 
+Virtual images hardly ever match the amount/type of interfaces the physical device it's representing. Along with that, ensuring the appropriate management interface that ContainerLab expects to see exists needs to be taken into account. We discussed using custom fields on the interfaces to do the mapping and/or a find and replace on the actual config.
 
 ### Seamless Connectivity to AWS deployed ContainerLab
 
-Ensuring we can have a seamless connection to AWX deployed ContainerLab was something we didn't tackle for the MVP. It is more difficult than the local container implementation so, we were unable to get that incorporated in time. 
+Ensuring we can have a seamless connection to AWX deployed ContainerLab was something we didn't tackle for the MVP. It is more difficult than the local container implementation so, we were unable to get that incorporated in time.
