@@ -21,12 +21,13 @@ class GuacamoleConnection(PluginTemplateExtension):  # pylint: disable=abstract-
     def right_page(self):
         """Content to add to the configuration compliance."""
         # TODO: Ensure this query will not slow things as this scales
-        exists = Topology.objects.filter(dynamic_group__in=self.device.dynamic_groups)
-        if not exists:
+        topologies = Topology.objects.filter(dynamic_group__in=self.device.dynamic_groups)
+        if not topologies:
             return ""
         extra_context = {
             "device": self.device,
             "template_type": "devicetab",
+            "topologies": topologies,
         }
         return self.render(
             "containerlab/guacamole_connection.html",
