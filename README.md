@@ -29,7 +29,27 @@ Optionally, a [Remote Topology File](https://containerlab.dev/cmd/deploy/#remote
 
 Optionally, you can configure with Guacamole to SSH to your devices.
 
-### Quick Start Dev Environment
+
+## Screenshots
+
+**Topology Detail**
+![topology detail](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/topology_detail.png)
+**Guacamole Integration**
+![guacamole gif](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/guac-demo.gif)
+**Mermaid Diagram**
+![Mermaid Diagram](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
+
+## Major Features
+
+- Dynamically create Containerlab topology files
+- Use the topology file to create a Docker-in-Docker Containerlab locally.
+- Use the topology file to deploy ContainerLab into an AWX instance (WIP).
+- SSH from your browser with Guacamole.
+- Check topology validity using [jsonschema](https://json-schema.org/).
+
+## Try it out!
+
+<!-- The Quickstart guide to deploying a dev environment can be found [here]() -->
 
 Download the Arista cEOS image `cEOS64-lab-4.32.1F.tar.xz` from [Arista's website](https://www.arista.com/en/support/software-download) and then run `docker import cEOS64-lab-4.32.1F.tar.xz ceos:4.32.1F` from the directory where this file was downloaded. Then you can proceed with the rest of the dev environment quick start below.
 
@@ -37,47 +57,51 @@ Download the Arista cEOS image `cEOS64-lab-4.32.1F.tar.xz` from [Arista's websit
 invoke build
 invoke migrate start cli
 nautobot-server generate_clab_test_data && exit
-invoke clab
 ```
 
-This will create 3 Arista cEOS routers in Nautobot and an attached containerlab environment. The routers will be connected to each other with the following cables in Nautobot (and virtual cables in containerlab): `rtr1:eth1` to `rtr2:eth1`, `rtr2:eth4` to `rtr3:eth4`. To stop the containerlab routers, run `invoke clab -a destroy`.
+### Navigate to Lab Topology 
 
-### Screenshots
+On the Nautobot Homepage, expand the "CONTAINERLAB" dropdown and click "Topologies".
 
-> Developer Note: Add any representative screenshots of the App in action. These images should also be added to the `docs/user/app_use_cases.md` section.
+![Navigation 1](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_1.png)
 
-> Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/app-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
+Once on the list of topologies, click the `lab device` topology. 
+![Navigation 2](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_2.png)
 
-More screenshots can be found in the [Using the App](https://docs.nautobot.com/projects/containerlab/en/latest/user/app_use_cases/) page in the documentation. Here's a quick overview of some of the app's added functionality:
+Once on detail page, you have multiple boxes of information as well as a "Containerlab" actions button. This action button allows you to do the following:
 
-![](https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/placeholder.png)
+- Deploy Containerlab topology from the presented topology file. 
+- Destroy an already destroyed topology.
+- Push the topology file to a git repo. 
 
-## Try it out!
+![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/button_options.png)
 
-> Developer Note: Only keep this section if appropriate. Update link to correct sandbox.
+Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI. 
 
-This App is installed in the Nautobot Community Sandbox found over at [demo.nautobot.com](https://demo.nautobot.com/)!
+> Note: You must first ensure you have Guacamole running by going through the [Guacamole](../admin/guacamole.md) documentation.
 
-> For a full list of all the available always-on sandbox environments, head over to the main page on [networktocode.com](https://www.networktocode.com/nautobot/sandbox-environments/).
+![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/topology_connections.png)
 
-## Documentation
+## Hackathon Experience
 
-Full documentation for this App can be found over on the [Nautobot Docs](https://docs.nautobot.com) website:
+ - The level of collaboration and expertise between the team was astounding. Everyone is so helpful and smart and it's awesome to see how much can get done when a group of like-minded people put their heads together. 
 
-- [User Guide](https://docs.nautobot.com/projects/containerlab/en/latest/user/app_overview/) - Overview, Using the App, Getting Started.
-- [Administrator Guide](https://docs.nautobot.com/projects/containerlab/en/latest/admin/install/) - How to Install, Configure, Upgrade, or Uninstall the App.
-- [Developer Guide](https://docs.nautobot.com/projects/containerlab/en/latest/dev/contributing/) - Extending the App, Code Reference, Contribution Guide.
-- [Release Notes / Changelog](https://docs.nautobot.com/projects/containerlab/en/latest/admin/release_notes/).
-- [Frequently Asked Questions](https://docs.nautobot.com/projects/containerlab/en/latest/user/faq/).
 
-### Contributing to the Documentation
+## Next Steps
 
-You can find all the Markdown source for the App documentation under the [`docs`](https://github.com/nautobot/nautobot-app-containerlab/tree/develop/docs) folder in this repository. For simple edits, a Markdown capable editor is sufficient: clone the repository and edit away.
+Our team came up with so many great ideas to continue pushing this app's capabilities. Some worth noting include
 
-If you need to view the fully-generated documentation site, you can build it with [MkDocs](https://www.mkdocs.org/). A container hosting the documentation can be started using the `invoke` commands (details in the [Development Environment Guide](https://docs.nautobot.com/projects/containerlab/en/latest/dev/dev_environment/#docker-development-environment)) on [http://localhost:8001](http://localhost:8001). Using this container, as your changes to the documentation are saved, they will be automatically rebuilt and any pages currently being viewed will be reloaded in your browser.
+- Capture Status of Containlerlab
+- Start/Stop control of Containerlab and individual devices within the lab.
+- Visualization Control (e.g pixel perfect)
 
-Any PRs with fixes or improvements are very welcome!
 
-## Questions
+On top of those ideas, there are more pressing ones that would need to be addressed to ensure a production version of this app is up to snuff. 
 
-For any questions or comments, please check the [FAQ](https://docs.nautobot.com/projects/containerlab/en/latest/user/faq/) first. Feel free to also swing by the [Network to Code Slack](https://networktocode.slack.com/) (channel `#nautobot`), sign up [here](http://slack.networktocode.com/) if you don't have an account.
+### Interface Mapping
+
+Virtual images hardly ever match the amount/type of interfaces the physical device it's representing. Along with that, ensuring the appropriate management interface that ContainerLab expects to see exists needs to be taken into account. We discussed using custom fields on the interfaces to do the mapping and/or a find and replace on the actual config. 
+
+### Seamless Connectivity to AWS deployed ContainerLab
+
+Ensuring we can have a seamless connection to AWX deployed ContainerLab was something we didn't tackle for the MVP. It is more difficult than the local container implementation so, we were unable to get that incorporated in time. 
