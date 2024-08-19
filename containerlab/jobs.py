@@ -51,7 +51,12 @@ def deploy_clab(job_obj, topology, action="deploy"):
     topology_worker_path = None
     topology_host_path = None
     for mount in worker_container.attrs["Mounts"]:
-        if mount["Type"] == "bind" and mount["Mode"] == "rw" and Path(mount["Destination"]).is_dir():
+        if (
+            mount["Type"] == "bind"
+            and mount["Mode"] == "rw"
+            and Path(mount["Destination"]).is_dir()
+            and (Path(mount["Destination"]) / "topologies").is_dir()
+        ):
             topology_worker_path = mount["Destination"]
             topology_host_path = mount["Source"]
             break
@@ -71,9 +76,11 @@ def deploy_clab(job_obj, topology, action="deploy"):
         host_docker_socket_path = docker_socket_mount[0]["Source"]
 
     # Write the topology file
-    yaml_file_path = Path(topology_worker_path) / f"{slugify(topology.name)}.yml"
+    yaml_file_path = Path(topology_worker_path) / "topologies" / f"{slugify(topology.name)}.yml"
     yaml_file_path.write_text(topology_data)
-    job_obj.logger.info(f"Topology file written to {topology_host_path}/{slugify(topology.name)}.yml on the host.")
+    job_obj.logger.info(
+        f"Topology file written to {topology_host_path}/topologies/{slugify(topology.name)}.yml on the host."
+    )
 
     # Run containerlab to deploy/destroy the topology
     job_obj.logger.info("%sing topology with containerlab.", action.capitalize())
@@ -95,7 +102,7 @@ def deploy_clab(job_obj, topology, action="deploy"):
                 "mode": "rw",
             },
         },
-        working_dir=topology_host_path,
+        working_dir=f"{topology_host_path}/topologies",
         network_mode="host",
         pid_mode="host",
         privileged=True,

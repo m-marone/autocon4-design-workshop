@@ -1,9 +1,3 @@
-# Clab files
-
-clab-lab-devices/
-.*.yml.bak
-clab.yml
-
 # Ansible Retry Files
 *.retry
 
