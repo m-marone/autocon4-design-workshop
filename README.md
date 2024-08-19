@@ -11,12 +11,13 @@ To avoid extra work and temporary links, make sure that publishing docs (or merg
 -->
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/icon-containerlab.png" class="logo" height="200px">
+  <!-- <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-containerlab/develop/docs/images/icon-containerlab.png" class="logo" height="200px"> -->
+  <img src="./docs/images/icon-containerlab.png" class="logo" height="200px">
   <br>
-  <a href="https://github.com/nautobot/nautobot-app-containerlab/actions"><img src="https://github.com/nautobot/nautobot-app-containerlab/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://docs.nautobot.com/projects/containerlab/en/latest/"><img src="https://readthedocs.org/projects/nautobot-plugin-containerlab/badge/"></a>
-  <a href="https://pypi.org/project/containerlab/"><img src="https://img.shields.io/pypi/v/containerlab"></a>
-  <a href="https://pypi.org/project/containerlab/"><img src="https://img.shields.io/pypi/dm/containerlab"></a>
+  <!-- <a href="https://github.com/nautobot/nautobot-app-containerlab/actions"><img src="https://github.com/nautobot/nautobot-app-containerlab/actions/workflows/ci.yml/badge.svg?branch=main"></a> -->
+  <!-- <a href="https://docs.nautobot.com/projects/containerlab/en/latest/"><img src="https://readthedocs.org/projects/nautobot-plugin-containerlab/badge/"></a> -->
+  <!-- <a href="https://pypi.org/project/containerlab/"><img src="https://img.shields.io/pypi/v/containerlab"></a> -->
+  <!-- <a href="https://pypi.org/project/containerlab/"><img src="https://img.shields.io/pypi/dm/containerlab"></a> -->
   <br>
   An <a href="https://networktocode.com/nautobot-apps/">App</a> for <a href="https://nautobot.com/">Nautobot</a>.
 </p>
@@ -33,11 +34,13 @@ Optionally, you can configure with Guacamole to SSH to your devices.
 ## Screenshots
 
 **Topology Detail**
-![topology detail](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/topology_detail.png)
+![topology detail](./docs/images/topology_detail.png)
+
 **Guacamole Integration**
-![guacamole gif](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/guac-demo.gif)
+![guacamole gif](./docs/images/guac-demo.gif)
+
 **Mermaid Diagram**
-![Mermaid Diagram](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/53a98bb211e160f2a64e08cdca67aeddca16d75e/docs/images/detail_readme.png)
+![Mermaid Diagram](./docs/images/detail_readme.png)
 
 ## Major Features
 
@@ -63,10 +66,10 @@ nautobot-server generate_clab_test_data && exit
 
 On the Nautobot Homepage, expand the "CONTAINERLAB" dropdown and click "Topologies".
 
-![Navigation 1](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_1.png)
+![Navigation 1](./docs/images/navigation_1.png)
 
 Once on the list of topologies, click the `lab device` topology. 
-![Navigation 2](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/navigation_2.png)
+![Navigation 2](./docs/images/navigation_2.png)
 
 Once on detail page, you have multiple boxes of information as well as a "Containerlab" actions button. This action button allows you to do the following:
 
@@ -74,13 +77,13 @@ Once on detail page, you have multiple boxes of information as well as a "Contai
 - Destroy an already destroyed topology.
 - Push the topology file to a git repo. 
 
-![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/button_options.png)
+![Topology Detail Action Button](./docs/images/button_options.png)
 
 Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI. 
 
-> Note: You must first ensure you have Guacamole running by going through the [Guacamole](../admin/guacamole.md) documentation.
+> Note: You must first ensure you have Guacamole running by going through the [Guacamole](./docs/admin/guacamole.md) documentation.
 
-![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/topology_connections.png)
+![Topology Detail Action Button](./docs/images/topology_connections.png)
 
 ## Hackathon Experience
 
