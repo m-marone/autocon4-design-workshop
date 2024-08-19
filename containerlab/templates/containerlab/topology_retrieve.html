@@ -93,6 +93,11 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Topology File {{ validate.valid | render_boolean }}</strong>
+            <span class="config_hover_button" style="float: right">
+                <button class="btn btn-inline btn-default hover_copy_button" data-clipboard-target="#clab-yaml">
+                    <span class="mdi mdi-content-copy"></span>
+                </button>
+            </span>
         </div>
         <table class="table table-hover panel-body attr-table">
             {% if not validate.valid %}
@@ -106,11 +111,6 @@
                 <td>
                     <span id="clab-yaml">
                         {% include 'extras/inc/json_data.html' with data=object.generate_topology_file_dict format="yaml" %}
-                    </span>
-                    <span class="config_hover_button">
-                        <button class="btn btn-inline btn-default hover_copy_button" data-clipboard-target="#clab-yaml">
-                            <span class="mdi mdi-content-copy"></span>
-                        </button>
                     </span>
                 </td>
             </tr>
