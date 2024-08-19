@@ -5,16 +5,21 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('extras', '0113_saved_views'),
-        ('containerlab', '0001_initial'),
+        ("extras", "0113_saved_views"),
+        ("containerlab", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='topology',
-            name='dynamic_group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='containerlab_topology', to='extras.dynamicgroup'),
+            model_name="topology",
+            name="dynamic_group",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="containerlab_topology",
+                to="extras.dynamicgroup",
+            ),
         ),
     ]

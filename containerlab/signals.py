@@ -13,7 +13,7 @@ TOPOLOGY_VIEW_BUTTONS = {
             "button_class": "primary",
             "group_name": "Containerlab Actions",
             "confirmation": True,
-        }
+        },
     },
     "destroy_local_clab": {
         "job_class_path": "containerlab.jobs.DestroyContainerTopologyToDocker",
@@ -25,7 +25,7 @@ TOPOLOGY_VIEW_BUTTONS = {
             "button_class": "primary",
             "group_name": "Containerlab Actions",
             "confirmation": True,
-        }
+        },
     },
     "push_topology_to_repo": {
         "job_class_path": "containerlab.jobs.PushContainerlabTopologyToGit",
@@ -37,9 +37,10 @@ TOPOLOGY_VIEW_BUTTONS = {
             "button_class": "primary",
             "group_name": "Containerlab Actions",
             "confirmation": True,
-        }
+        },
     },
 }
+
 
 def create_job_buttons(sender, apps, **kwargs):  # pylint: disable=unused-argument
     """Enable Jobs."""

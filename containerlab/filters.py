@@ -5,9 +5,7 @@ from nautobot.apps.filters import NameSearchFilterSet, NautobotFilterSet
 from containerlab import models
 
 
-class TopologyFilterSet(
-    NautobotFilterSet, NameSearchFilterSet
-):  # pylint: disable=too-many-ancestors
+class TopologyFilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: disable=too-many-ancestors
     """Filter for Topology."""
 
     class Meta:

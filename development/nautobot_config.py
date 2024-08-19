@@ -137,11 +137,11 @@ PLUGINS_CONFIG = {
         "guac_user": "guacadmin",
         "guac_pass": "guacadmin",
         "guac_data_source": "postgresql",
-        "guac_frontend_url": "http://127.0.0.1:8081"
+        "guac_frontend_url": "http://127.0.0.1:8081",
     },
     "nautobot_awx_runner": {
         "base_url": os.getenv("AWX_BASE_URL"),
         "username": os.getenv("AWX_USERNAME"),
         "password": os.getenv("AWX_PASSWORD"),
-    }
+    },
 }

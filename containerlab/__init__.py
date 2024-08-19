@@ -30,6 +30,7 @@ class ContainerlabConfig(NautobotAppConfig):
         """Method to call signals."""
         super().ready()
         from containerlab.signals import create_job_buttons
+
         nautobot_database_ready.connect(create_job_buttons, sender=self)
 
 

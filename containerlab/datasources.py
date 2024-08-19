@@ -1,4 +1,5 @@
 """Containerlab Datasources."""
+
 import os
 
 import yaml
@@ -11,22 +12,23 @@ from containerlab.models import TopologyTemplate
 
 def refresh_git_clab_topologies(repository_record, job_result, delete=False):
     """Callback for GitRepository updates on Containerlab repo."""
-    if 'containerlab.topology' not in repository_record.provided_contents or delete:
+    if "containerlab.topology" not in repository_record.provided_contents or delete:
         return
     job_result.log(
         "Successfully pulled Containerlab Topologies repo",
         level_choice=LogLevelChoices.LOG_INFO,
     )
 
+
 def refresh_git_clab_templates(repository_record, job_result, delete=False):
     """Callback for GitRepository updates on Containerlab repo."""
-    if 'containerlab.template' not in repository_record.provided_contents or delete:
+    if "containerlab.template" not in repository_record.provided_contents or delete:
         return
     job_result.log(
         "Successfully pulled Containerlab Template repo",
         level_choice=LogLevelChoices.LOG_INFO,
     )
-    template_path = os.path.join(repository_record.filesystem_path, 'clab_topology_templates')
+    template_path = os.path.join(repository_record.filesystem_path, "clab_topology_templates")
     for filename in os.listdir(template_path):
         with open(os.path.join(template_path, filename)) as fd:
             template_contents = fd.read()
@@ -46,6 +48,7 @@ def refresh_git_clab_templates(repository_record, job_result, delete=False):
                 level_choice=LogLevelChoices.LOG_INFO,
             )
 
+
 datasource_contents = [
     (
         "extras.gitrepository",
@@ -64,5 +67,5 @@ datasource_contents = [
             icon="mdi-flask-outline",
             callback=refresh_git_clab_templates,
         ),
-    )
+    ),
 ]

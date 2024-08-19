@@ -1,12 +1,11 @@
 """API serializers for containerlab."""
+
 from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
 from containerlab import models
 
 
-class TopologySerializer(
-    NautobotModelSerializer, TaggedModelSerializerMixin
-):  # pylint: disable=too-many-ancestors
+class TopologySerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
     """Topology Serializer."""
 
     class Meta:

@@ -1,4 +1,5 @@
 """Test topology forms."""
+
 from django.test import TestCase
 
 from containerlab import forms
