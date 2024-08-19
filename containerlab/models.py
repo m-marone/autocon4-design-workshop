@@ -62,13 +62,16 @@ class Topology(PrimaryModel):  # pylint: disable=too-many-ancestors
     def generate_mermaid_diagram(self, **kwargs):
         """Generate mermaid diagram definition."""
         topology = self.generate_topology_file_dict()["topology"]
-        endpoints = topology["links"]
+        endpoints = topology.get("links", [])
         links = [
             f"{ep['endpoints'][0].split(':')[0]}---|"
             f"{ep['endpoints'][0].split(':')[1]}:{ep['endpoints'][1].split(':')[1]}|"
             f"{ep['endpoints'][1].split(':')[0]}"
             for ep in endpoints
         ]
+        if not links:
+            # Sort by Device name
+            return "graph TD\n" + "\n".join(sorted(topology["nodes"].keys()))
         # Sort by termination_a Device name, then termination_a Interface name
         return "graph TD\n" + "\n".join(sorted(links, key=lambda x: (x.split("---")[0], x.split("|")[1].split(":")[0])))
 
