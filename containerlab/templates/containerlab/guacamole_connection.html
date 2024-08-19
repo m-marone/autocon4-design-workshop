@@ -1,0 +1,30 @@
+{% load static %}
+<script type="text/javascript" src="{% static 'nautobot_containerlab/guac.js' %}"></script>
+
+<div class="panel panel-default">
+    <table class="table table-hover panel-body attr-table">
+    <tr>
+        <td>
+            Connect to Device
+        </td>
+        <td>
+            <a href="#" 
+               class="connect-icon"
+               data-create-url="{% url 'plugins-api:containerlab-api:create-guacamole-device' pk=device.pk %}"
+               data-url="{% url 'plugins-api:containerlab-api:get-guacamole-clientid' pk=device.pk %}">
+               <i class="mdi mdi-console"></i>
+            </a>
+    </td>
+    </tr>
+    </table>
+</div>
+<script>
+    document.querySelectorAll('.connect-icon').forEach(icon => {
+        icon.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            const createUrl = this.getAttribute('data-create-url'); 
+            const url = this.getAttribute('data-url'); 
+            createAndRedirect(url, createUrl, "{{ csrf_token }}"); 
+        });
+    });
+</script>

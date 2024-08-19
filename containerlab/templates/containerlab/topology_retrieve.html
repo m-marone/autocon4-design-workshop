@@ -5,6 +5,7 @@
 
 {% block content_left_page %}
     <script type="text/javascript" src="{% static 'nautobot_containerlab/mermaid-10.9.1/mermaid.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'nautobot_containerlab/guac.js' %}"></script>
     <div class="panel panel-default">
         <div class="panel-heading">
             <strong>Topology</strong>
@@ -100,42 +101,12 @@
     </div>
     {% endwith %}
 <script>
-    async function createAndRedirect(url, createUrl) {
-        try {
-            // Step 1: Call the create-guacamole-device API
-            let createResponse = await fetch(createUrl, {
-                method: 'POST',
-                headers: {
-                    "X-CSRFTOKEN": "{{ csrf_token }}",
-                },
-            });
-
-            if (!createResponse.ok) {
-                throw new Error('Failed to create the Guacamole device');
-            }
-
-            // Step 2: Call the get-guacamole-clientid API
-            let clientIdResponse = await fetch(url);
-
-            if (!clientIdResponse.ok) {
-                throw new Error('Failed to retrieve the Guacamole client ID');
-            }
-
-            let data = await clientIdResponse.json();
-
-            // Step 3: Redirect to the URL returned by the API
-            window.open(data.url, '_blank');
-        } catch (error) {
-            console.error(error);
-            alert('An error occurred: ' + error.message);
-        }
-    }
     document.querySelectorAll('.connect-icon').forEach(icon => {
         icon.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default link behavior
             const createUrl = this.getAttribute('data-create-url'); 
             const url = this.getAttribute('data-url'); 
-            createAndRedirect(url, createUrl); 
+            createAndRedirect(url, createUrl, "{{ csrf_token }}"); 
         });
     });
 </script>
