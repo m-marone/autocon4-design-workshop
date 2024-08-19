@@ -69,9 +69,7 @@ class CreateGuacamoleDevice(APIView):
             # Retrieve the device object using the pk
             device = Device.objects.get(pk=pk)
         except Device.DoesNotExist:
-            return Response(
-                {"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Determine the name and hostname
         device_name = device.name
@@ -139,19 +137,14 @@ class CreateGuacamoleDevice(APIView):
             )
             if parameter_response.status_code != 200:
                 return Response(
-                    {
-                        "error": "Failed to retrieve connection parameters from Guacamole"
-                    },
+                    {"error": "Failed to retrieve connection parameters from Guacamole"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
 
             existing_parameters = parameter_response.json()
 
             # Compare the existing device's parameters with the new payload
-            if (
-                existing_details["protocol"] != payload["protocol"]
-                or existing_parameters != payload["parameters"]
-            ):
+            if existing_details["protocol"] != payload["protocol"] or existing_parameters != payload["parameters"]:
                 # Update the device
                 update_response = requests.put(
                     f"{guac_url}/guacamole/api/session/data/{guac_data_source}/connections/{existing_device['identifier']}?token={token}",
@@ -169,9 +162,7 @@ class CreateGuacamoleDevice(APIView):
                     status=status.HTTP_202_ACCEPTED,
                 )
             else:
-                return Response(
-                    {"message": "No changes needed"}, status=status.HTTP_200_OK
-                )
+                return Response({"message": "No changes needed"}, status=status.HTTP_200_OK)
         else:
             # Step 3: Create the device
             create_response = requests.post(
@@ -198,9 +189,7 @@ class GetGuacamoleClient(APIView):
             # Retrieve the device object using the pk
             device = Device.objects.get(pk=pk)
         except Device.DoesNotExist:
-            return Response(
-                {"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Determine the name and hostname
         device_name = device.name
@@ -235,9 +224,7 @@ class GetGuacamoleClient(APIView):
             if conn_info["name"] == device_name:
                 existing_device = conn_info
                 break
-        clientid = guacamole_clientid(
-            existing_device["identifier"], "c", guac_data_source
-        )
+        clientid = guacamole_clientid(existing_device["identifier"], "c", guac_data_source)
         return Response(
             {
                 "clientid": clientid,

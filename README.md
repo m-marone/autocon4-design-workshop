@@ -74,13 +74,13 @@ Once on detail page, you have multiple boxes of information as well as a "Contai
 - Destroy an already destroyed topology.
 - Push the topology file to a git repo. 
 
-![Topology Detail Action Button]([../images/button_options.png](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/button_options.png))
+![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/button_options.png)
 
 Once a topology is deployed, you can connect to your devices via the "Connection Portal" table. All you need to do is click on the device's respective SSH symbol and a new tab will open dropping you into the device's CLI. 
 
 > Note: You must first ensure you have Guacamole running by going through the [Guacamole](../admin/guacamole.md) documentation.
 
-![Topology Detail Action Button]([../images/topology_connections.png](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/topology_connections.png))
+![Topology Detail Action Button](https://github.com/networktocode-llc/nautobot-app-containerlab/blob/a4f90d5a5686fb1dac810250be1eb99fd70a526f/docs/images/topology_connections.png)
 
 ## Hackathon Experience
 
