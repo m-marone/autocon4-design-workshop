@@ -5,7 +5,6 @@ from nautobot.apps.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 from containerlab import models
 
-
 class TopologyTable(BaseTable):
     # pylint: disable=R0903
     """Table for list view."""
@@ -46,6 +45,13 @@ class CLKindTable(BaseTable):
 
     pk = ToggleColumn()
     kind = tables.Column(linkify=True)
+    actions = ButtonsColumn(
+        models.CLKind,
+        # Option for modifying the default action buttons on each row:
+        # buttons=("changelog", "edit", "delete"),
+        # Option for modifying the pk for the action buttons:
+        pk_field="pk",
+    )
 
     class Meta(BaseTable.Meta):
         """Meta attributes."""
