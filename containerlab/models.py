@@ -153,6 +153,10 @@ class CLKind(PrimaryModel):
         verbose_name = "ContainerLab Kind"
         verbose_name_plural = "ContainerLab Kinds"
 
+    def __str__(self):
+        """Stringify instance."""
+        return self.kind
+
     def _clean_exposed_ports(self):
         """Perform validation of the `exposed_ports` field."""
         # Split the string by commas
