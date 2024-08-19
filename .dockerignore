@@ -24,3 +24,6 @@ LICENSE
 **/.vscode/
 invoke*.yml
 tasks.py
+
+# Containerlab topology files
+topologies/
