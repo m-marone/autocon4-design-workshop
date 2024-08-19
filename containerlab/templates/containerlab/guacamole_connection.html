@@ -2,6 +2,9 @@
 <script type="text/javascript" src="{% static 'nautobot_containerlab/guac.js' %}"></script>
 
 <div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Containerlab</strong>
+    </div>
     <table class="table table-hover panel-body attr-table">
     <tr>
         <td>
@@ -14,7 +17,7 @@
                data-url="{% url 'plugins-api:containerlab-api:get-guacamole-clientid' pk=device.pk %}">
                <i class="mdi mdi-console"></i>
             </a>
-    </td>
+        </td>
     </tr>
     </table>
 </div>
