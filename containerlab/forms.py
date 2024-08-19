@@ -69,7 +69,7 @@ class CLKindForm(NautobotModelForm):
             "platform",
             "kind",
             "image",
-            "exposed_ports",
+            # "exposed_ports",
             "node_extras",
         ]
 
