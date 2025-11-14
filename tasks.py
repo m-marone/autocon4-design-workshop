@@ -48,7 +48,7 @@ namespace = Collection("containerlab")
 namespace.configure(
     {
         "containerlab": {
-            "nautobot_ver": "2.3.0",
+            "nautobot_ver": "2.4.8",
             "project_name": "containerlab",
             "python_ver": "3.11",
             "local": False,

@@ -150,8 +150,8 @@ class CLKind(PrimaryModel):
 
         ordering = ["kind"]
         unique_together = ("kind", "image")
-        verbose_name = "ContainerLab Kind"
-        verbose_name_plural = "ContainerLab Kinds"
+        verbose_name = "Containerlab Kind"
+        verbose_name_plural = "Containerlab Kinds"
 
     def __str__(self):
         """Stringify instance."""

@@ -127,7 +127,7 @@ if not _TESTING:
 #
 
 # Enable installed Apps. Add the name of each App to the list.
-PLUGINS = ["containerlab", "nautobot_awx_runner"]
+PLUGINS = ["containerlab", "nautobot_awx_runner", "nautobot_design_builder", "nautobot_plugin_nornir", "nautobot_golden_config"]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
@@ -140,8 +140,41 @@ PLUGINS_CONFIG = {
         "guac_frontend_url": "http://127.0.0.1:8081",
     },
     "nautobot_awx_runner": {
-        "base_url": os.getenv("AWX_BASE_URL"),
-        "username": os.getenv("AWX_USERNAME"),
-        "password": os.getenv("AWX_PASSWORD"),
+        "base_url": os.getenv("AWX_BASE_URL", "http://localhost:8080"),
+        "username": os.getenv("AWX_USERNAME", "admin"),
+        "password": os.getenv("AWX_PASSWORD", "password"),
+    },
+    "nautobot_plugin_nornir": {
+        "nornir_settings": {
+            "credentials": "nautobot_plugin_nornir.plugins.credentials.nautobot_secrets.CredentialsNautobotSecrets",
+            "runner": {
+                "plugin": "threaded",
+                "options": {
+                    "num_workers": 20,
+                },
+            },
+        },
+    },
+    "nautobot_golden_config": {
+        "per_feature_bar_width": 0.15,
+        "per_feature_width": 13,
+        "per_feature_height": 4,
+        "enable_backup": True,
+        "enable_compliance": True,
+        "enable_intended": True,
+        "enable_sotagg": True,
+        "enable_plan": True,
+        "enable_deploy": True,
+        "enable_postprocessing": False,
+        "sot_agg_transposer": None,
+        "postprocessing_callables": [],
+        "postprocessing_subscribed": [],
+        "jinja_env": {
+            "undefined": "jinja2.StrictUndefined",
+            "trim_blocks": True,
+            "lstrip_blocks": False,
+        },
+        # "default_deploy_status": "Not Approved",
+        # "get_custom_compliance": "my.custom_compliance.func"
     },
 }

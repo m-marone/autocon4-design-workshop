@@ -22,11 +22,13 @@ services:
     environment:
       GUACD_HOSTNAME: guacd
       POSTGRESQL_DATABASE: guacamole_db
-      POSTGRES_HOSTNAME: db
+      POSTGRESQL_HOSTNAME: db
+      POSTGRESQL_USERNAME: nautobot
+      POSTGRESQL_PASSWORD: changeme
       # LOGBACK_LEVEL: debug
-    env_file:
-      - "development.env"
-      - "creds.env"
+    # env_file:
+    #   - "development.env"
+    #   - "creds.env"
     depends_on:
     - guacd
   guacd:
@@ -55,6 +57,9 @@ services:
       start_period: "60s"
       retries: 3
       test: ["CMD", "true"]  # Due to layering, disable: true won't work. Instead, change the test
+    env_file:
+      - "development.env"
+      - "creds.env"
   docs:
     entrypoint: "mkdocs serve -v -a 0.0.0.0:8080"
     ports:
