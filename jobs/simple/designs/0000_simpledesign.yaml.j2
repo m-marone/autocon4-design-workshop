@@ -1,4 +1,4 @@
 ---
 manufacturers:
-  - name: "{{ manufacturer }}"
+  - "!create_or_update:name": "{{ manufacturer }}"
     description: "{{ manufacturer }} Systems"
