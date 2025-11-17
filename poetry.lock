@@ -2779,24 +2779,6 @@ remote-storage = ["django-storages (==1.14.3)"]
 sso = ["social-auth-core[saml] (>=4.5.6,<4.6.0)"]
 
 [[package]]
-name = "nautobot-awx-runner"
-version = "0.1.0"
-description = "A Nautobot App for interacting with AWX/AAP"
-optional = false
-python-versions = ">=3.8,<=3.12.3"
-files = [
-    {file = "nautobot_awx_runner-0.1.0-py3-none-any.whl", hash = "sha256:9eff254b5ad6654c99ad5da36cd4d99d0bcc5a37e61be35436b7903d27719695"},
-]
-
-[package.dependencies]
-ansi2html = ">=1.9,<2.0"
-nautobot = ">=2.3.0,<3.0.0"
-
-[package.source]
-type = "file"
-url = "nautobot_awx_runner-0.1.0-py3-none-any.whl"
-
-[[package]]
 name = "nautobot-capacity-metrics"
 version = "3.1.1"
 description = "App to improve the instrumentation of Nautobot and expose additional metrics (Application Metrics, RQ Worker)."

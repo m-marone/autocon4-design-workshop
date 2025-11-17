@@ -1,4 +1,0 @@
-*.json
-*.tfstate*
-.terraform
-.ssh
