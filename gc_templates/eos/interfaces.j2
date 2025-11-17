@@ -2,6 +2,7 @@
 {% if 'eth' in interface["name"] %}
 interface {{ interface["name"] }}
 {% include "./gc_templates/eos/_physical.j2" %}
+
 !
 {% endif %}
 {% endfor %}
@@ -9,6 +10,7 @@ interface {{ interface["name"] }}
 {% if 'Loop' in interface["name"] %}
 interface {{ interface["name"] }}
 {% include "./gc_templates/eos/_loopback.j2" %}
+
 !
 {% endif %}
 {% endfor %}
