@@ -1,0 +1,12 @@
+---
+# OSPF Adjacencies
+- test_class: TestNetmikoOspfNeighborsCount
+  test_data:
+    - host: clab-AC4-aus01-rtr1
+      neighbor_count: 2
+    - host: clab-AC4-aus01-rtr2
+      neighbor_count: 2
+    - host: clab-AC4-aus01-sw1
+      neighbor_count: 2
+    - host: clab-AC4-aus01-sw2
+      neighbor_count: 2
